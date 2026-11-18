@@ -31,6 +31,7 @@ surface and mapped to preventive controls, telemetry, response, and current gaps
 
 ### Implemented in the repository
 - Workspace-bounded, read-only heuristic log triage.
+- ZIP central-directory inspection for expansion bombs, nested archives, path traversal member names, and symlink metadata without extracting members.
 - Candidate IOC extraction without contacting indicators.
 - Local SHA-256 and static file metadata/magic/entropy inspection.
 - A read-only Windows posture collector for Defender, Windows Firewall profiles,
