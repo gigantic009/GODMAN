@@ -114,7 +114,7 @@ Optional environment overrides:
 - `GODMAN_DATA_DIR`
 - `GODMAN_WORKSPACE`
 
-See [`docs/ROADMAP.md`](docs/ROADMAP.md) for milestone status and verification gates.
+See [`docs/WINDOWS_FIRST_CHECKUP.md`](docs/WINDOWS_FIRST_CHECKUP.md) for the safe first-run Windows endpoint checkup steps. See [`docs/ROADMAP.md`](docs/ROADMAP.md) for milestone status and verification gates.
 
 ## Tests
 Run the offline test suite:
