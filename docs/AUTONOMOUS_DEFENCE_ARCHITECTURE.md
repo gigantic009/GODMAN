@@ -213,3 +213,18 @@ A feature is not complete until it has:
 
 GODMAN must report unknown coverage honestly. A green status dashboard is not a
 certificate that the computer or network is secure.
+
+
+## Research basis
+
+The detailed research synthesis and implementation mapping are maintained in
+[SECURITY_RESEARCH_BASELINE.md](SECURITY_RESEARCH_BASELINE.md). It reviews CERT-In's
+AI-assisted vulnerability defence blueprint and AI-agent security advisory, NIST CSF
+2.0, Microsoft Windows 11 security controls, Wazuh endpoint/FIM/vulnerability and
+response capabilities, Suricata IDS/IPS, OPNsense firewall APIs, Tailscale device
+posture/access control, and CISA home-router and incident-response guidance.
+
+The recommended implementation strategy is to reuse Defender for endpoint prevention,
+Wazuh for endpoint telemetry and file integrity, Suricata/Zeek for network visibility,
+and a supported router/firewall API for perimeter enforcement. GODMAN is the
+policy-aware orchestration, correlation, explanation, alerting, and approval layer.
