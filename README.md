@@ -34,6 +34,15 @@ SQLite audit log
 
 The model cannot run arbitrary PowerShell, CMD, Python, or shell commands. Every local capability must be explicitly registered with a JSON schema and risk level. File operations are constrained to the configured workspace. Write and system actions require the user to type exactly `YES` at the approval prompt. Tool outcomes are recorded in a local audit database.
 
+## Cybersecurity division
+GODMAN includes a defensive cybersecurity specialization covering governance, network and application security, cloud, endpoint, identity, cryptography, incident response, safe malware analysis, threat intelligence, vulnerability management, SOC operations, secure engineering, and IoT/OT security. Use `/cyber` to view the coverage map.
+
+Current local security tools:
+- `analyze_security_log` — bounded, read-only heuristic triage of supported log files in the GODMAN workspace.
+- `sha256_workspace_file` — local SHA-256 hashing without execution or upload.
+
+These tools are analyst aids, not a certified scanner or proof of compromise. Remote scanning, exploitation, automatic containment, malware execution, and reputation lookups are not enabled. See [`docs/CYBERSECURITY.md`](docs/CYBERSECURITY.md), [`docs/CYBERSECURITY_REFERENCES.md`](docs/CYBERSECURITY_REFERENCES.md), and [`docs/SECURITY.md`](docs/SECURITY.md).
+
 ## Requirements
 - Python 3.10+
 - OpenAI API key (API billing is separate from ChatGPT subscription)
@@ -67,6 +76,7 @@ Then enter `/voice` inside GODMAN. It uses push-to-talk recording, local faster-
 ## Commands
 - `/help` — list commands
 - `/diagnostics` — read-only OS and disk overview
+- `/cyber` — show cybersecurity specialization areas
 - `/tools` — list registered tools and risk levels
 - `/audit` — inspect recent local tool audit events
 - `/remember TEXT` — save a local note
