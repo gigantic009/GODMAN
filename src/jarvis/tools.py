@@ -141,7 +141,7 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
     registry.register(Tool("system_summary", "Read basic operating-system and Python information.", "read",
                            system_summary, _object({}, [])))
     registry.register(Tool("disk_summary", "Read disk capacity for a path.", "read", disk_summary,
-                           _object({"path": {"type": "string", "description": "Drive or directory path", "default": "."}}, [])))
+                           _object({"path": {"type": "string", "description": "Drive or directory path; use the current directory when unsure"}}, ["path"])))
     registry.register(Tool("list_workspace_files", "List entries inside the configured GODMAN workspace.", "read",
                            lambda relative_path: list_workspace_files(str(workspace), relative_path),
                            _object({"relative_path": {"type": "string"}}, ["relative_path"])))
