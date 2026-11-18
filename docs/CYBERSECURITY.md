@@ -24,6 +24,7 @@ GODMAN's cybersecurity mode is designed as a defensive security analyst and lear
 - Read-only log triage using transparent heuristic patterns.
 - Candidate IOC extraction from supplied log text (IPv4, domains, URLs, common file hashes).
 - Local SHA-256 hashing of files inside the configured workspace.
+- Static file metadata, magic-byte, and entropy inspection without executing samples.
 - All file inspection is bounded and workspace-scoped.
 - No file execution, remote scanning, exploitation, or external reputation lookup occurs.
 
