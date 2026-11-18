@@ -3,6 +3,7 @@ import json
 from openai import OpenAI
 
 from .memory import MemoryStore
+from .cyber_policy import CYBERSECURITY_GUIDANCE
 
 MAX_HISTORY_MESSAGES = 20
 MAX_USER_MESSAGE_CHARS = 12_000
@@ -31,7 +32,7 @@ class AssistantCore:
     def _call_model(self, input_data, previous_response_id=None, extra_context=""):
         kwargs = {
             "model": self.model,
-            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name) + extra_context,
+            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name) + "\\n\\n" + CYBERSECURITY_GUIDANCE + extra_context,
             "input": input_data,
         }
         if self.tool_registry:
