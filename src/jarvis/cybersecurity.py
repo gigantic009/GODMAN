@@ -155,3 +155,59 @@ def sha256_workspace_file(workspace: str | Path, relative_path: str) -> dict:
             digest.update(chunk)
     return {"file": target.name, "bytes": size, "algorithm": "SHA-256", "digest": digest.hexdigest(),
             "note": "Hash calculated locally. No upload, execution, or reputation lookup was performed."}
+
+
+MAGIC_SIGNATURES = [
+    (b"MZ", "Windows PE executable"),
+    (b"\\x7fELF", "ELF executable or object"),
+    (b"%PDF-", "PDF document"),
+    (b"PK\\x03\\x04", "ZIP archive or ZIP-based document"),
+    (b"\\x89PNG\\r\\n\\x1a\\n", "PNG image"),
+    (b"\\xff\\xd8\\xff", "JPEG image"),
+    (b"GIF87a", "GIF image"),
+    (b"GIF89a", "GIF image"),
+]
+
+
+def inspect_file_static(workspace: str | Path, relative_path: str) -> dict:
+    """Inspect basic file metadata, magic bytes, SHA-256, and entropy; never execute."""
+    target = _workspace_file(workspace, relative_path)
+    size = target.stat().st_size
+    if size > MAX_HASH_BYTES:
+        raise ValueError(f"File exceeds the {MAX_HASH_BYTES // (1024 * 1024)} MB static-analysis limit.")
+    digest = hashlib.sha256()
+    frequencies = [0] * 256
+    sample = bytearray()
+    total = 0
+    with target.open("rb") as handle:
+        while True:
+            chunk = handle.read(1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+            total += len(chunk)
+            for byte in chunk:
+                frequencies[byte] += 1
+            if len(sample) < 16:
+                sample.extend(chunk[:16 - len(sample)])
+    file_type = "Unknown or unrecognized"
+    for signature, label in MAGIC_SIGNATURES:
+        if sample.startswith(signature):
+            file_type = label
+            break
+    entropy = 0.0
+    if total:
+        import math
+        entropy = -sum((count / total) * math.log2(count / total)
+                       for count in frequencies if count)
+    return {
+        "file": target.name,
+        "extension": target.suffix.lower(),
+        "bytes": size,
+        "sha256": digest.hexdigest(),
+        "magic_type_guess": file_type,
+        "entropy_bits_per_byte": round(entropy, 4),
+        "high_entropy_indicator": entropy >= 7.2,
+        "assessment": "Static metadata only. High entropy can occur in compressed, encrypted, or packed files and is not proof of malware.",
+        "safety": "File was opened as data only; it was not executed, uploaded, or modified.",
+    }
