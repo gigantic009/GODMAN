@@ -51,6 +51,7 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [x] Workspace-bounded log triage with explainable heuristic findings
 - [x] Candidate IOC extraction without external lookups
 - [x] Local SHA-256 hashing without file execution or upload
+- [x] Static file metadata, magic-byte, and entropy inspection without execution
 - [x] Cybersecurity reference stack documented
 - [x] Offline tests authored for IOC parsing, log triage, path safety, and hashing
 - [ ] Execute and verify all tests on Windows and GitHub Actions
