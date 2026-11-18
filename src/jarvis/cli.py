@@ -127,7 +127,7 @@ def main() -> None:
             print("GODMAN Cybersecurity Division")
             for domain, description in SECURITY_DOMAINS.items():
                 print(f"- {domain.replace('_', ' ').title()}: {description}")
-            print("\nAvailable local tools: analyze_security_log, sha256_workspace_file")
+            print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file")
             print("Testing policy: authorized assets and isolated labs only.")
             continue
         if raw == "/tools":
