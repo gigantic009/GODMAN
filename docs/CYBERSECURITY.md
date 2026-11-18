@@ -48,6 +48,8 @@ GODMAN must not provide or execute credential theft, phishing deployment, persis
 
 ## Reference ecosystems
 
+The maintained source list and integration policy are tracked in [`CYBERSECURITY_REFERENCES.md`](CYBERSECURITY_REFERENCES.md).
+
 - MITRE ATT&CK: adversary tactics and techniques for threat-informed defence.
 - Sigma: portable, vendor-neutral detection rules for log events.
 - Wazuh: open-source SIEM/XDR and endpoint security monitoring.
