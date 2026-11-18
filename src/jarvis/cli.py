@@ -3,6 +3,7 @@ from openai import APIConnectionError, APIStatusError, AuthenticationError, Rate
 from .config import get_settings
 from .core import AssistantCore
 
+
 def main() -> None:
     settings = get_settings()
     name = settings["assistant_name"] or "GODMAN"
@@ -18,14 +19,14 @@ def main() -> None:
         assistant_name=name,
     )
 
-    print(f"\\n{name} — Phase 1")
-    print("Text assistant online. Type 'exit' or 'quit' to close.\\n")
+    print(f"\n{name} — Phase 1")
+    print("Text assistant online. Type 'exit' or 'quit' to close.\n")
 
     while True:
         try:
             user_text = input("You: ").strip()
         except (KeyboardInterrupt, EOFError):
-            print(f"\\n{name}: Goodbye.")
+            print(f"\n{name}: Goodbye.")
             break
 
         if not user_text:
@@ -35,14 +36,14 @@ def main() -> None:
             break
 
         try:
-            print(f"\\n{name}: {assistant.respond(user_text)}\\n")
+            print(f"\n{name}: {assistant.respond(user_text)}\n")
         except AuthenticationError:
-            print("\\nAuthentication failed. Check OPENAI_API_KEY in .env.\\n")
+            print("\nAuthentication failed. Check OPENAI_API_KEY in .env.\n")
         except RateLimitError:
-            print("\\nAPI rate limit or available quota reached. Check your API account.\\n")
+            print("\nAPI rate limit or available quota reached. Check your API account.\n")
         except APIConnectionError:
-            print("\\nConnection failed. Check your internet connection.\\n")
+            print("\nConnection failed. Check your internet connection.\n")
         except APIStatusError as exc:
-            print(f"\\nAPI error ({exc.status_code}). Check model name and API access.\\n")
+            print(f"\nAPI error ({exc.status_code}). Check model name and API access.\n")
         except Exception as exc:
-            print(f"\\nUnexpected error: {type(exc).__name__}: {exc}\\n")
+            print(f"\nUnexpected error: {type(exc).__name__}: {exc}\n")
