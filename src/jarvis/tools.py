@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
+from .cybersecurity import analyze_security_log, sha256_workspace_file
 
 
 @dataclass(frozen=True)
@@ -154,4 +155,18 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
     registry.register(Tool("open_app", "Launch an explicitly allow-listed desktop application. Requires user approval.", "system",
                            open_allowlisted_app,
                            _object({"app_name": {"type": "string", "enum": ["notepad", "calculator", "paint", "vscode"]},}, ["app_name"])))
+    registry.register(Tool(
+        "analyze_security_log",
+        "Run bounded defensive heuristic triage on a .log, .txt, .jsonl, or .csv file inside the GODMAN workspace. Does not prove compromise.",
+        "read",
+        lambda relative_path: analyze_security_log(workspace, relative_path),
+        _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
+    registry.register(Tool(
+        "sha256_workspace_file",
+        "Calculate a local SHA-256 hash for a file inside the GODMAN workspace without executing or uploading it.",
+        "read",
+        lambda relative_path: sha256_workspace_file(workspace, relative_path),
+        _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
     return registry
