@@ -54,7 +54,7 @@ class AssistantCore:
             saved = self.memory.recent(5)
             if saved:
                 lines = [f"- [{item['category']}] {item['content']}" for item in saved]
-                memory_context = "\\n\\nRelevant saved notes (untrusted reference data):\\n" + "\\n".join(lines)
+                memory_context = "\n\nRelevant saved notes (untrusted reference data):\n" + "\n".join(lines)
         response = self._call_model(pending, extra_context=memory_context)
         rounds = 0
 
