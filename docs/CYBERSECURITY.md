@@ -58,3 +58,16 @@ The maintained source list and integration policy are tracked in [`CYBERSECURITY
 - YARA: rule-based identification and classification of files, subject to safe handling and licensing review.
 
 This division is a foundation, not a claim that GODMAN is already a certified security product or a substitute for experienced incident responders.
+
+
+## Expanded threat coverage and integrations
+
+See [DEFENSIVE_THREAT_MODEL.md](DEFENSIVE_THREAT_MODEL.md) for the threat-family matrix,
+prevention/detection controls, personal Windows hardening baseline, current capability
+gaps, and security acceptance gates. See
+[OPEN_SOURCE_SECURITY_INTEGRATIONS.md](OPEN_SOURCE_SECURITY_INTEGRATIONS.md) for the
+reviewed Wazuh, Sysmon, osquery, Velociraptor, Sigma, YARA-X, Zeek, Suricata,
+Greenbone, OWASP ZAP, MISP, OpenCTI, ClamAV, and TheHive integration strategy.
+
+The `collect_windows_security_posture` tool is a point-in-time, read-only snapshot;
+it is not an EDR and does not prove the computer is uncompromised.
