@@ -26,6 +26,7 @@ GODMAN's cybersecurity mode is designed as a defensive security analyst and lear
 - Local SHA-256 hashing of files inside the configured workspace.
 - Static file metadata, magic-byte, and entropy inspection without executing samples.
 - All file inspection is bounded and workspace-scoped.
+- An approval-gated Microsoft Defender custom scan can scan a selected workspace file/folder; it is not continuous or whole-device monitoring.
 - No file execution, remote scanning, exploitation, or external reputation lookup occurs.
 
 The log analyser returns leads, not verdicts. A matching line is not proof of compromise; false positives and incomplete telemetry are expected.
@@ -62,7 +63,7 @@ This division is a foundation, not a claim that GODMAN is already a certified se
 
 ## Expanded threat coverage and integrations
 
-See [DEFENSIVE_THREAT_MODEL.md](DEFENSIVE_THREAT_MODEL.md) for the threat-family matrix,
+See [AUTONOMOUS_DEFENCE_ARCHITECTURE.md](AUTONOMOUS_DEFENCE_ARCHITECTURE.md) for the target architecture covering network firewalls, remote access, credential exposure monitoring, continuous endpoint defence, and controlled threat-intelligence updates. See [DEFENSIVE_THREAT_MODEL.md](DEFENSIVE_THREAT_MODEL.md) for the threat-family matrix,
 prevention/detection controls, personal Windows hardening baseline, current capability
 gaps, and security acceptance gates. See
 [OPEN_SOURCE_SECURITY_INTEGRATIONS.md](OPEN_SOURCE_SECURITY_INTEGRATIONS.md) for the
