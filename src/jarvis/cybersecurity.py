@@ -9,7 +9,6 @@ import hashlib
 import ipaddress
 import re
 from pathlib import Path
-from urllib.parse import urlsplit
 
 MAX_LOG_BYTES = 2 * 1024 * 1024
 MAX_HASH_BYTES = 100 * 1024 * 1024
@@ -71,16 +70,16 @@ def _workspace_file(workspace: str | Path, relative_path: str) -> Path:
 
 def _ip_context(value: str) -> str:
     address = ipaddress.ip_address(value)
-    if address.is_private:
-        return "private"
     if address.is_loopback:
         return "loopback"
     if address.is_link_local:
         return "link_local"
     if address.is_multicast:
         return "multicast"
-    if address.is_reserved or address.is_unspecified:
+    if address.is_unspecified or address.is_reserved:
         return "reserved_or_unspecified"
+    if address.is_private:
+        return "private"
     return "public"
 
 
