@@ -30,6 +30,7 @@ class SecurityToolRegistrationTests(unittest.TestCase):
             for tool in registry.model_tools():
                 self.assertTrue(tool["strict"])
                 self.assertEqual(tool["parameters"].get("additionalProperties"), False)
+                self.assertEqual(set(tool["parameters"].get("properties", {})), set(tool["parameters"].get("required", [])))
 
 
 if __name__ == "__main__":
