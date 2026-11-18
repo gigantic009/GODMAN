@@ -157,3 +157,20 @@ and recommend low-risk reversible actions. It must not autonomously retaliate, e
 change firewall policy, terminate arbitrary processes, delete/quarantine user files, rotate
 credentials, install unsigned code, or grant itself permissions. A kill switch, audit trail,
 and recovery path are mandatory.
+
+
+## Research-driven implementation priorities (19 Nov 2026)
+
+- [x] Review CERT-In AI-assisted vulnerability defence and AI-agent risk guidance
+- [x] Review NIST CSF 2.0, Microsoft Windows security controls, Wazuh, Suricata, OPNsense, Tailscale, and CISA home-network/incident response material
+- [x] Record adaptive firewall design, trust boundaries, autonomy policy, and implementation mapping in SECURITY_RESEARCH_BASELINE.md
+- [ ] Inventory the actual Windows endpoint and supported security controls; confirm Defender/Firewall/BitLocker posture on owner's machine
+- [ ] Add bounded Windows Defender/Security event collection with redaction and retention
+- [ ] Evaluate and deploy Wazuh agent/manager architecture in a resource-appropriate lab; no production install until reviewed
+- [ ] Identify the exact home router make/model/firmware and determine whether a supported local API exists
+- [ ] Add read-only router posture/log adapter for a supported model only
+- [ ] Add Suricata passive IDS sensor in a lab or supported gateway; measure traffic visibility and performance
+- [ ] Add alert correlation, confidence scoring, deduplication, rate limiting, and sensor health
+- [ ] Implement temporary, expiring, allow-listed block proposals with self-lockout protection and rollback
+- [ ] Add secure owner-only remote status access with MFA and default read-only permissions
+- [ ] Add trusted threat-intelligence updater with provenance, signature verification, freshness, tests, and rollback
