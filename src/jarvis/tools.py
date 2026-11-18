@@ -14,6 +14,7 @@ from .markets import market_snapshot, detect_price_events
 from .security_posture import collect_windows_security_posture
 from .archive_safety import inspect_zip_safety
 from .security_scanning import scan_with_microsoft_defender
+from .windows_firewall import inspect_windows_firewall
 
 
 @dataclass(frozen=True)
@@ -209,6 +210,13 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         lambda relative_path: inspect_zip_safety(workspace, relative_path),
         _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
+    registry.register(Tool(
+        "inspect_windows_firewall",
+        "Read Windows Firewall profiles and up to 500 enabled inbound allow rules; generate a conservative baseline plan without changing any setting.",
+        "read",
+        inspect_windows_firewall,
+        _object({}, []),
     ))
     registry.register(Tool(
         "scan_workspace_with_defender",
