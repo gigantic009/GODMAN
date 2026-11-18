@@ -10,6 +10,7 @@ from typing import Any, Callable
 
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
 from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
+from .markets import market_snapshot, detect_price_events
 
 
 @dataclass(frozen=True)
@@ -175,5 +176,19 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         lambda relative_path: sha256_workspace_file(workspace, relative_path),
         _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
+
+    registry.register(Tool(
+        "analyze_market_prices",
+        "Calculate descriptive technical indicators and configurable price-move events from user-supplied chronological closing prices. No live quote retrieval or trade execution.",
+        "read",
+        lambda closes, move_threshold=0.03: {
+            "snapshot": market_snapshot(closes),
+            "price_events": detect_price_events(closes, move_threshold),
+        },
+        _object({
+            "closes": {"type": "array", "items": {"type": "number"}, "minItems": 50},
+            "move_threshold": {"type": "number", "minimum": 0.001, "maximum": 0.99},
+        }, ["closes"]),
     ))
     return registry
