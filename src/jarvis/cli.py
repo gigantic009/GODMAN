@@ -20,6 +20,7 @@ Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
   /cyber                Show GODMAN cybersecurity specialization areas
+  /markets              Explain available market analytics
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
   /tool NAME [JSON]     Run an allow-listed tool manually
@@ -129,6 +130,12 @@ def main() -> None:
                 print(f"- {domain.replace('_', ' ').title()}: {description}")
             print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file")
             print("Testing policy: authorized assets and isolated labs only.")
+            continue
+        if raw == "/markets":
+            print("GODMAN Market Intelligence")
+            print("Available model tool: analyze_market_prices (50+ chronological closes required)")
+            print("Calculates moving averages, RSI, volatility, drawdown, and threshold-based price events.")
+            print("No live market feed or trade execution is connected.")
             continue
         if raw == "/tools":
             print(json.dumps(registry.describe(), indent=2))
