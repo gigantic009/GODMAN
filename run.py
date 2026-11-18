@@ -1,8 +1,7 @@
-"""Application entry point."""
+"""GODMAN application entry point."""
 import sys
 from pathlib import Path
 
-# Make the src-layout package importable without installing it yet.
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from jarvis.cli import main
