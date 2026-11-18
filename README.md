@@ -45,6 +45,11 @@ notepad .env
 python run.py
 ```
 
+### Run offline unit tests
+```powershell
+python -m unittest discover -s tests -v
+```
+
 ### WSL / Ubuntu setup
 ```bash
 python3 -m venv .venv
@@ -55,6 +60,8 @@ cp .env.example .env
 nano .env
 python run.py
 ```
+
+Run offline unit tests with `python -m unittest discover -s tests -v`.
 
 Set `OPENAI_API_KEY` in `.env`. Set `OPENAI_MODEL` to a model available to your API account. Never commit `.env` or share your API key.
 
@@ -75,7 +82,7 @@ GODMAN/
 ```
 
 ## Roadmap
-1. **Phase 1:** Text assistant, API configuration, session history, error handling.
+1. **Phase 1:** Text assistant, API configuration, bounded session history, error handling, offline unit tests.
 2. **Phase 2:** Read-only Windows diagnostics and approved file search.
 3. **Phase 3:** Explicit local tools, permission gateway, confirmations, audit logs.
 4. **Phase 4:** Speech-to-text, text-to-speech, optional wake word.
