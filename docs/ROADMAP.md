@@ -123,3 +123,37 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [ ] Add threat-intelligence enrichment (CVE/KEV, MISP/OpenCTI)
 - [ ] Add incident case/evidence chain-of-custody workflows
 - [ ] Add approved remediation playbooks with dry-run, confirmation, and rollback
+
+
+## Autonomous personal cyber-defence programme
+
+### Implemented in this increment
+- [x] Add an opt-in Microsoft Defender custom scan for a file or subfolder inside the configured GODMAN workspace
+- [x] Classify the Defender scan as a system-risk action requiring interactive approval
+- [x] Use fixed executable arguments, `shell=False`, path containment, and a bounded timeout
+- [x] Add mocked unit tests for path rejection, fixed invocation, and timeout handling
+- [ ] Execute the complete test suite and verify GitHub Actions; no passing run is claimed yet
+
+### Required before unattended operation
+- [ ] Windows event ingestion (Defender, Security, System, and optional Sysmon) with bounded queries, redaction, retention, and tamper-evident audit
+- [ ] Full-device scheduled Defender scans using native Windows scheduling, with explicit owner opt-in, resource windows, notifications, and cancellation
+- [ ] File-system change monitoring with exclusions, backpressure, sensor-health checks, and no automatic execution of files
+- [ ] Safe phishing triage: URL parsing, IDN/homograph warnings, redirect/reputation lookups with privacy controls, attachment metadata, and no auto-opening
+- [ ] Password exposure monitoring through approved provider breach-alert APIs; never collect or transmit raw passwords
+- [ ] Vulnerability inventory and CVE/KEV matching; remediation recommendations first, staged patches only after owner approval
+- [ ] Windows Firewall profile assessment and proposed inbound-deny rules; changes require preview, approval, and rollback
+- [ ] Router/firewall integration through supported vendor APIs; no guessed credentials or exposed management ports
+- [ ] Passive network IDS ingestion (Zeek/Suricata) and optional IPS blocking only after false-positive validation
+- [ ] Incident response orchestration: quarantine/block/disable-account proposals, evidence snapshot, approval, rollback, and post-action verification
+- [ ] Secure remote access via an outbound-initiated, authenticated, encrypted channel with device identity, MFA, short-lived sessions, and no public RDP/agent listener
+- [ ] Mobile notifications and secure remote status/control interface with read-only default and step-up approval for changes
+- [ ] Curated threat-intelligence updater: vendor advisories, CISA KEV, NVD/CVE, CERT-In, and trusted project releases; source provenance, signature checks, freshness, and rollback
+- [ ] Controlled self-update pipeline: signed artifacts, pinned dependencies, SBOM, tests, staged rollout, backup, rollback, and owner approval for privilege/security changes
+- [ ] Independent security review, threat modelling, Windows integration tests, recovery drills, and documented false-positive/false-negative limits
+
+### Autonomy boundary
+GODMAN may autonomously collect approved telemetry, correlate alerts, refresh signed intelligence,
+and recommend low-risk reversible actions. It must not autonomously retaliate, exploit systems,
+change firewall policy, terminate arbitrary processes, delete/quarantine user files, rotate
+credentials, install unsigned code, or grant itself permissions. A kill switch, audit trail,
+and recovery path are mandatory.
