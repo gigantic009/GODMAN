@@ -13,6 +13,7 @@ from .cybersecurity import analyze_security_log, inspect_file_static, sha256_wor
 from .markets import market_snapshot, detect_price_events
 from .security_posture import collect_windows_security_posture
 from .archive_safety import inspect_zip_safety
+from .security_scanning import scan_with_microsoft_defender
 
 
 @dataclass(frozen=True)
@@ -208,5 +209,12 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         lambda relative_path: inspect_zip_safety(workspace, relative_path),
         _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
+    registry.register(Tool(
+        "scan_workspace_with_defender",
+        "Run an explicitly approved Microsoft Defender custom scan on a file or subfolder inside the configured GODMAN workspace. May take up to 30 minutes; does not guarantee remediation.",
+        "system",
+        lambda relative_path: scan_with_microsoft_defender(workspace, relative_path),
+        _object({"relative_path": {"type": "string", "description": "Existing file or subfolder relative to the configured GODMAN workspace"}}, ["relative_path"]),
     ))
     return registry
