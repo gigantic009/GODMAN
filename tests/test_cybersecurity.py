@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from jarvis.cybersecurity import analyze_security_log, extract_indicators, sha256_workspace_file
+from jarvis.cybersecurity import analyze_security_log, extract_indicators, inspect_file_static, sha256_workspace_file
 
 
 class CybersecurityTests(unittest.TestCase):
@@ -37,6 +37,14 @@ class CybersecurityTests(unittest.TestCase):
         (self.root / "sample.exe").write_bytes(b"not a log")
         with self.assertRaises(ValueError):
             analyze_security_log(self.root, "sample.exe")
+
+    def test_static_file_inspection_reports_metadata_without_execution(self):
+        sample = self.root / "sample.pdf"
+        sample.write_bytes(b"%PDF-1.7 sample content")
+        result = inspect_file_static(self.root, "sample.pdf")
+        self.assertEqual(result["magic_type_guess"], "PDF document")
+        self.assertEqual(result["extension"], ".pdf")
+        self.assertIn("not executed", result["safety"])
 
     def test_sha256_hash_is_deterministic(self):
         sample = self.root / "sample.txt"
