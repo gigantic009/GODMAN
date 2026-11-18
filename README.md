@@ -44,6 +44,15 @@ Current local security tools:
 
 These tools are analyst aids, not a certified scanner or proof of compromise. Remote scanning, exploitation, automatic containment, malware execution, and reputation lookups are not enabled. See [`docs/CYBERSECURITY.md`](docs/CYBERSECURITY.md), [`docs/CYBERSECURITY_REFERENCES.md`](docs/CYBERSECURITY_REFERENCES.md), and [`docs/SECURITY.md`](docs/SECURITY.md).
 
+## Market intelligence division
+
+GODMAN's initial quantitative research engine calculates SMA, EMA, RSI, MACD,
+Bollinger Bands, historical volatility, maximum drawdown, and configurable price-move
+events from supplied chronological price data. These are descriptive analytics—not
+live quotes, predictions, or trading recommendations. Timestamped market-data feeds,
+fundamentals/filings/news ingestion, backtesting, portfolio risk, and live monitoring
+are planned integrations. See [docs/MARKET_INTELLIGENCE.md](docs/MARKET_INTELLIGENCE.md).
+
 ## Requirements
 - Python 3.10+
 - OpenAI API key (API billing is separate from ChatGPT subscription)
