@@ -1,41 +1,48 @@
 # GODMAN — Personal AI Assistant
 
-A modular hybrid personal AI assistant for Windows, built with Python.
+A modular hybrid personal AI assistant for Windows, built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
 
-## Vision
-GODMAN combines cloud AI intelligence with controlled local computer capabilities, voice interaction, memory, and a desktop interface.
+## Current capabilities (Phases 1–5)
+- OpenAI Responses API conversation with bounded session context.
+- Function/tool calling through an explicit registry (no arbitrary shell tool).
+- Read-only system and disk diagnostics.
+- Workspace-scoped file listing and reading.
+- Workspace file creation and allow-listed app launching, with explicit approval.
+- SQLite memory for saved notes and conversation history.
+- Optional push-to-talk voice: local Whisper transcription and local text-to-speech.
+- SQLite audit log for tool outcomes.
+- Offline unit tests and GitHub Actions CI.
 
 ## Architecture
 ```text
-User (voice / text)
-       |
-Interface (CLI -> desktop UI)
-       |
-Agent orchestrator
-       |
-Cloud AI / optional local model
-       |
-Task planner + tool registry
-       |
-Security gateway (permissions, approvals, limits)
-       |
-Windows / files / browser / applications
-       |
-Audit log + persistent memory
+Voice / Text CLI
+      |
+AssistantCore (Responses API + bounded context)
+      |                       |
+      |                  SQLite memory
+      |
+Model function calls
+      |
+Strict Tool Registry
+      |
+SecurityPolicy (read / write / system approvals)
+      |
+Workspace-scoped files | diagnostics | allow-listed app launcher
+      |
+SQLite audit log
 ```
 
-The model never receives unrestricted shell access. Computer actions are exposed through explicit tools with allow-lists, validation, logging, timeouts, and confirmation gates for sensitive operations.
+The model cannot run arbitrary PowerShell, CMD, Python, or shell commands. Every local capability must be explicitly registered with a JSON schema and risk level. File operations are constrained to the configured workspace. Write and system actions require the user to type exactly `YES` at the approval prompt. Tool outcomes are recorded in a local audit database.
 
-## Phase 1 — Conversational Core
-This milestone is intentionally text-only. It connects to the OpenAI Responses API and maintains a bounded conversation history for the current session. It does not execute commands or access local files.
-
-### Requirements
+## Requirements
 - Python 3.10+
 - OpenAI API key (API billing is separate from ChatGPT subscription)
-- Internet connection
+- Internet connection for cloud model responses
 
-### Windows setup (PowerShell)
+## Windows setup (PowerShell)
 ```powershell
+git clone https://github.com/gigantic009/GODMAN.git
+cd GODMAN
 py -3 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
@@ -45,58 +52,65 @@ notepad .env
 python run.py
 ```
 
-### Run offline unit tests
-```powershell
-python -m unittest discover -s tests -v
-```
+Set `OPENAI_API_KEY` in `.env`. Set `OPENAI_MODEL` to a model available to your API account. Keep `.env` private; it is git-ignored.
 
-### WSL / Ubuntu setup
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-cp .env.example .env
-nano .env
+## Optional voice setup
+Voice packages are intentionally separate because audio dependencies may need device-specific setup.
+
+```powershell
+pip install -r requirements-voice.txt
 python run.py
 ```
 
-Run offline unit tests with `python -m unittest discover -s tests -v`.
+Then enter `/voice` inside GODMAN. It uses push-to-talk recording, local faster-whisper transcription, and pyttsx3 speech. It is not an always-listening wake-word service yet.
 
-Set `OPENAI_API_KEY` in `.env`. Set `OPENAI_MODEL` to a model available to your API account. Never commit `.env` or share your API key.
+## Commands
+- `/help` — list commands
+- `/diagnostics` — read-only OS and disk overview
+- `/tools` — list registered tools and risk levels
+- `/remember TEXT` — save a local note
+- `/recall WORDS` — search saved notes
+- `/memories` — list recent notes
+- `/forget ID` — delete a note
+- `/voice` — optional push-to-talk voice mode
+- `/tool NAME JSON` — manually invoke a registered tool
 
-## Project structure
-```text
-GODMAN/
-├── README.md
-├── requirements.txt
-├── .env.example
-├── .gitignore
-├── run.py
-└── src/
-    └── jarvis/
-        ├── __init__.py
-        ├── config.py
-        ├── core.py
-        └── cli.py
+Normal messages are sent to the model. The model may request tools from the registry. Read tools run directly; writes and app launches require approval.
+
+## Data locations
+- `.godman/memory.sqlite3` — saved notes and conversation history
+- `.godman/audit.sqlite3` — tool audit events
+- `workspace/` — files GODMAN is allowed to read and create
+
+Optional environment overrides:
+- `GODMAN_DATA_DIR`
+- `GODMAN_WORKSPACE`
+
+## Tests
+Run the offline test suite:
+
+```powershell
+python -m unittest discover -s tests -v
+python -m compileall -q src run.py
 ```
 
-## Roadmap
-1. **Phase 1:** Text assistant, API configuration, bounded session history, error handling, offline unit tests.
-2. **Phase 2:** Read-only Windows diagnostics and approved file search.
-3. **Phase 3:** Explicit local tools, permission gateway, confirmations, audit logs.
-4. **Phase 4:** Speech-to-text, text-to-speech, optional wake word.
-5. **Phase 5:** Persistent memory and project context.
-6. **Phase 6:** Desktop UI, screen understanding, browser workflows.
-7. **Phase 7:** Optional local-model fallback and carefully scoped proactive automations.
+GitHub Actions runs compilation and unit tests on pushes and pull requests.
+
+## Roadmap beyond Phase 5
+6. Desktop UI, screen understanding, and carefully scoped browser workflows.
+7. Local model fallback, wake-word voice, and scheduled automations.
 
 ## Security principles
-- Start with least privilege.
 - No unrestricted unattended shell execution.
-- Require confirmation for deletion, installation, privilege changes, external communication, and other high-impact operations.
-- Validate tool inputs and constrain file paths.
-- Log tool calls and outcomes without logging secrets.
-- Keep credentials in environment variables; rotate exposed keys.
+- Require approval for writes and system-level actions.
+- Never overwrite files through the initial workspace tool.
+- Resolve paths and reject workspace traversal.
+- Keep secrets in environment variables; never log credentials.
+- Treat retrieved file contents and tool output as untrusted data.
+- Review the audit log if an action behaves unexpectedly.
+
+## Research references
+Architecture ideas were reviewed from open-source projects including [NOVA](https://github.com/vincenzo-afk/NOVA), [atuldhull/JARVIS](https://github.com/atuldhull/jarvis), [Personal Jarvis](https://github.com/tbckdev/PersonalJarvis), and [mflorgar/jarvis-agent](https://github.com/mflorgar/jarvis-agent). GODMAN uses its own implementation and deliberately starts with a narrower, auditable tool surface.
 
 ## License
 To be selected by the repository owner.
