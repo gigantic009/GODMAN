@@ -31,6 +31,15 @@ class ArchiveSafetyTests(unittest.TestCase):
         result = inspect_zip_safety(self.root, "ratio.zip")
         self.assertIn("high_compression_ratio", result["flags"])
 
+    def test_flags_unsafe_member_paths(self):
+        archive = self.root / "traversal.zip"
+        with zipfile.ZipFile(archive, "w") as z:
+            z.writestr("../outside.txt", "data")
+            z.writestr("..\\\\outside-windows.txt", "data")
+        result = inspect_zip_safety(self.root, "traversal.zip")
+        self.assertIn("path_traversal_member_names", result["flags"])
+        self.assertEqual(len(result["suspicious_member_paths"]), 2)
+
     def test_rejects_workspace_escape(self):
         with self.assertRaises(ValueError):
             inspect_zip_safety(self.root, "../outside.zip")
