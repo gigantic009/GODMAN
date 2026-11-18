@@ -102,3 +102,23 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [ ] Add secrets redaction, retention controls, and per-tool audit provenance
 - [ ] Add monitoring scheduler with opt-in scopes, rate limits, and kill switch
 - [ ] Add plugin/provider health checks and stale-data alarms
+
+
+## Defensive baseline milestone
+- [x] Build attack-surface/threat-family catalogue (phishing, malicious files, archive bombs, resource exhaustion, ransomware, identity, network, browser, exploit, persistence, supply chain, data theft, physical, cloud, insider, availability)
+- [x] Document control mapping, response priorities, limitations, and security acceptance gates
+- [x] Review major open-source projects and define adapter-first integration strategy
+- [x] Add read-only Windows Defender, Firewall, BitLocker, and hotfix posture snapshot
+- [x] Add unit tests for posture collector behavior (mocked PowerShell; no machine changes)
+- [x] Add Python 3.10–3.12 GitHub Actions test workflow
+- [ ] Verify the workflow passes on GitHub
+- [ ] Run posture assessment on the owner's Windows device and review each result
+- [ ] Add event collection (Defender/Sysmon) with explicit privacy and retention controls
+- [ ] Add safe phishing URL/file triage with reputation source provenance
+- [ ] Add bounded archive-bomb/resource-exhaustion inspection
+- [ ] Add YARA-X/ClamAV static scanning in an isolated, resource-limited workflow
+- [ ] Add Sigma rule validation and mapped Windows event coverage
+- [ ] Add passive network telemetry ingestion (Zeek/Suricata)
+- [ ] Add threat-intelligence enrichment (CVE/KEV, MISP/OpenCTI)
+- [ ] Add incident case/evidence chain-of-custody workflows
+- [ ] Add approved remediation playbooks with dry-run, confirmation, and rollback
