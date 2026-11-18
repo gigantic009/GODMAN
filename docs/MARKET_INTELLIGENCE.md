@@ -38,3 +38,25 @@ JPMorgan/Goldman Sachs are quality benchmarks for analytical discipline only; GO
 is independent and has no affiliation with them.
 
 See [ROADMAP.md](ROADMAP.md).
+
+
+## Candidate data-source strategy (reviewed November 2026)
+
+- **Indian market research prototype:** NSE's official MCP exposes cash-market tools,
+  including historical Bhavcopy data (up to five years) and a live-market interface
+  described by NSE as approximately 1–3 minutes behind trading. NSE states this is for
+  informational/learning use and not for real-time trading, investment advice, or
+  commercial deployment. Check current terms before enabling it.
+- **Licensed Indian real-time production feed:** NSE Data & Analytics lists real-time
+  Level 1/2/3 and tick-by-tick feeds, plus snapshot and historical products. This is a
+  subscription/licensing path, not a free public feed.
+- **Global multi-exchange candidate:** Twelve Data documents REST and WebSocket APIs
+  for equities and other assets across 250+ exchanges in 90+ countries. Actual
+  exchange, entitlement, and real-time coverage must be checked per instrument/plan.
+- **Fundamentals/research enrichment candidate:** Alpha Vantage documents stock
+  time-series, fundamentals, earnings, news/sentiment, and technical-indicator APIs;
+  intraday and real-time entitlements vary by endpoint and subscription.
+
+Initial implementation should use a provider interface and label every quote with
+provider, timestamp, exchange, currency, and real-time/delayed status. Do not scrape
+exchange websites or bypass licensing. These candidates are not connected yet.
