@@ -44,3 +44,20 @@
 
 ## Next
 Phase 6 should add a desktop UI and screen understanding only after the Windows installation and Phase 1–5 tests are verified.
+
+## Cybersecurity Division foundation (added after Phase 5)
+- [x] Broad cybersecurity domain map and analyst response policy
+- [x] Authorization-first defensive security guidance
+- [x] Workspace-bounded log triage with explainable heuristic findings
+- [x] Candidate IOC extraction without external lookups
+- [x] Local SHA-256 hashing without file execution or upload
+- [x] Cybersecurity reference stack documented
+- [x] Offline tests authored for IOC parsing, log triage, path safety, and hashing
+- [ ] Execute and verify all tests on Windows and GitHub Actions
+- [ ] Add current CVE/advisory retrieval with source/date/confidence
+- [ ] Add YARA-based static scanning in an isolated workflow
+- [ ] Add Sigma rule parsing and test fixtures
+- [ ] Add opt-in Wazuh integration
+- [ ] Add OWASP ZAP integration with explicit target allow-lists and safe scan profiles
+- [ ] Add network telemetry ingestion and packet analysis
+- [ ] Add forensics workflows with evidence integrity and chain-of-custody records
