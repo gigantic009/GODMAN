@@ -98,3 +98,15 @@ security advisories. A third-party agent itself expands the attack surface.
 - A rollback/recovery path exists for every remediation.
 - False positives, missed detections, sensor health, and stale data are visible.
 - No tool claims "protected" or "clean" solely because no alert fired.
+
+
+## Authoritative defensive guidance
+
+- [NSA Cybersecurity Information Sheet: Best Practices for Cyber Hygiene (September 3, 2026)](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/4590054/nsa-highlights-cyber-hygiene-best-practices-effective-against-ai-enhanced-targe/) — progressive maturity, inventory, MFA, patching, segmentation, continuous monitoring; explicitly not an exhaustive list of every attack vector. <https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/Article/4590054/nsa-highlights-cyber-hygiene-best-practices-effective-against-ai-enhanced-targe/>
+- [NIST IR 8374 Rev. 1: Ransomware Risk Management (June 11, 2026)](https://csrc.nist.gov/news/2026/ransomware-risk-management-ir-8374r1) — practical ransomware prevention, response and recovery profile.
+- [CISA joint guidance: Detecting and Mitigating Active Directory Compromises (September 15, 2026)](https://content.govdelivery.com/accounts/USDHSCISA/bulletins/42acb6e) — identity compromise, credential theft, privilege escalation, persistence and monitoring.
+- [CISA technical approaches to uncovering malicious activity](https://www.cisa.gov/sites/default/files/publications/AA20-245A-Joint_CSA-Technical_Approaches_to_Uncovering_Malicious_Activity_508.pdf) — layered defense, allowlisting, least privilege, backups and incident readiness.
+- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) — governance and risk-management structure.
+
+These references guide the architecture; they do not certify GODMAN or guarantee
+that every attack can be detected or prevented.
