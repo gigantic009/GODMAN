@@ -28,7 +28,8 @@ class EndpointCheckupTests(unittest.TestCase):
             events_collector=lambda: {"events": [{"id": 4625}, {"id": 1116}]},
         )
         self.assertEqual(result["checkup"], "completed")
-        self.assertEqual(result["summary"]["high_findings"], 2)
+        self.assertEqual(result["summary"]["high_findings"], 3)
+        self.assertTrue(any("malware detection" in item["finding"] for item in result["findings"]))
         self.assertEqual(result["summary"]["events_returned"], 2)
         self.assertEqual(result["actions_taken"], [])
         self.assertTrue(result["read_only"])
