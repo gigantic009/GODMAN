@@ -128,6 +128,9 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 ## Autonomous personal cyber-defence programme
 
 ### Implemented in this increment
+- [x] Add a consolidated, read-only `/checkup` command combining Defender posture, firewall inventory, and selected Windows event review
+- [x] Add event-ID-based triage summaries with explicit severity labels and point-in-time limitations
+- [x] Add a Windows first-run checkup guide with safe commands and privacy guidance
 - [x] Add an opt-in Microsoft Defender custom scan for a file or subfolder inside the configured GODMAN workspace
 - [x] Classify the Defender scan as a system-risk action requiring interactive approval
 - [x] Use fixed executable arguments, `shell=False`, path containment, and a bounded timeout
