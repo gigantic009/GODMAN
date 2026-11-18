@@ -11,6 +11,7 @@ from .diagnostics import collect_diagnostics
 from .memory import MemoryStore
 from .security import ApprovalRequired, SecurityPolicy
 from .tools import Tool, build_default_registry
+from .cybersecurity import SECURITY_DOMAINS
 
 
 def _print_help() -> None:
@@ -18,6 +19,7 @@ def _print_help() -> None:
 Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
+  /cyber                Show GODMAN cybersecurity specialization areas
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
   /tool NAME [JSON]     Run an allow-listed tool manually
@@ -120,6 +122,13 @@ def main() -> None:
             continue
         if raw == "/diagnostics":
             print(json.dumps(collect_diagnostics(), indent=2))
+            continue
+        if raw == "/cyber":
+            print("GODMAN Cybersecurity Division")
+            for domain, description in SECURITY_DOMAINS.items():
+                print(f"- {domain.replace('_', ' ').title()}: {description}")
+            print("\\nAvailable local tools: analyze_security_log, sha256_workspace_file")
+            print("Testing policy: authorized assets and isolated labs only.")
             continue
         if raw == "/tools":
             print(json.dumps(registry.describe(), indent=2))
