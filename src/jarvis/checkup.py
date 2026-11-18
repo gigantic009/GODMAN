@@ -74,7 +74,27 @@ def run_endpoint_checkup(
                 })
 
     event_data = sections.get("security_events", {})
-    event_count = len(event_data.get("events", [])) if isinstance(event_data, dict) else 0
+    event_items = event_data.get("events", []) if isinstance(event_data, dict) else []
+    event_count = len(event_items)
+    event_severity = {
+        1116: ("high", "Defender reported a malware detection event"),
+        1102: ("high", "Windows Security audit log was cleared"),
+        5001: ("high", "Defender real-time protection change/disable event recorded"),
+        5007: ("medium", "Defender configuration change event recorded"),
+        7045: ("medium", "A Windows service installation event was recorded"),
+        1117: ("info", "Defender remediation action event recorded"),
+        4625: ("info", "One or more failed sign-in events were recorded"),
+    }
+    for item in event_items:
+        if not isinstance(item, dict):
+            continue
+        event_id = item.get("id")
+        if event_id in event_severity:
+            severity, label = event_severity[event_id]
+            findings.append({
+                "severity": severity, "source": "security_events",
+                "finding": f"{label} (event ID {event_id}); inspect the event details and timestamp",
+            })
     high_count = sum(1 for item in findings if item["severity"] == "high")
     return {
         "product": "GODMAN",
