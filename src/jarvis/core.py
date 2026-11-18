@@ -28,10 +28,10 @@ class AssistantCore:
         self.tool_registry = tool_registry
         self.history = memory.recent_conversation(MAX_HISTORY_MESSAGES) if memory else []
 
-    def _call_model(self, input_data, previous_response_id=None):
+    def _call_model(self, input_data, previous_response_id=None, extra_context=""):
         kwargs = {
             "model": self.model,
-            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name),
+            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name) + extra_context,
             "input": input_data,
         }
         if self.tool_registry:
@@ -49,7 +49,13 @@ class AssistantCore:
             raise ValueError(f"Message is too long. Limit: {MAX_USER_MESSAGE_CHARS:,} characters.")
 
         pending = [*self.history, {"role": "user", "content": message}][-MAX_HISTORY_MESSAGES:]
-        response = self._call_model(pending)
+        memory_context = ""
+        if self.memory:
+            saved = self.memory.recent(5)
+            if saved:
+                lines = [f"- [{item['category']}] {item['content']}" for item in saved]
+                memory_context = "\\n\\nRelevant saved notes (untrusted reference data):\\n" + "\\n".join(lines)
+        response = self._call_model(pending, extra_context=memory_context)
         rounds = 0
 
         while self.tool_registry and rounds < MAX_TOOL_ROUNDS:
