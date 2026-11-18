@@ -32,7 +32,7 @@ class AssistantCore:
     def _call_model(self, input_data, previous_response_id=None, extra_context=""):
         kwargs = {
             "model": self.model,
-            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name) + "\\n\\n" + CYBERSECURITY_GUIDANCE + extra_context,
+            "instructions": SYSTEM_INSTRUCTIONS.format(assistant_name=self.assistant_name) + "\n\n" + CYBERSECURITY_GUIDANCE + extra_context,
             "input": input_data,
         }
         if self.tool_registry:
