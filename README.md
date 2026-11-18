@@ -41,7 +41,7 @@ Current local security tools:
 - `analyze_security_log` — bounded, read-only heuristic triage of supported log files in the GODMAN workspace.
 - `sha256_workspace_file` — local SHA-256 hashing without execution or upload.
 - `inspect_file_static` — basic file-type, hash, and entropy inspection without execution.
-- `collect_windows_security_posture` — read-only Windows Defender, Firewall, BitLocker, and recent hotfix snapshot; use `/posture`.
+- `run_endpoint_checkup` — consolidated read-only review of Defender posture, firewall policy and selected security events; use `/checkup`.\n- `collect_windows_security_posture` — read-only Windows Defender, Firewall, BitLocker, and recent hotfix snapshot; use `/posture`.
 - `inspect_windows_firewall` — read-only inventory of firewall profiles and up to 500 enabled inbound allow rules, plus a proposed baseline; use `/firewall`. No settings are changed.
 - `collect_windows_security_events` — bounded, read-only query of selected local Defender, Security and System events with basic message redaction; use `/events`.
 - `analyze_url_structure` — offline phishing URL structure checks; use `/url URL`. It does not visit or reputation-check the URL.
@@ -93,7 +93,7 @@ Then enter `/voice` inside GODMAN. It uses push-to-talk recording, local faster-
 - `/help` — list commands
 - `/diagnostics` — read-only OS and disk overview
 - `/cyber` — show cybersecurity specialization areas
-- `/posture` — read selected Windows security controls without changing them
+- `/checkup` — consolidated read-only endpoint review (Defender posture, firewall, selected events)\n- `/posture` — read selected Windows security controls without changing them
 - `/tools` — list registered tools and risk levels
 - `/audit` — inspect recent local tool audit events
 - `/remember TEXT` — save a local note
