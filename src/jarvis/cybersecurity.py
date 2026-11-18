@@ -159,11 +159,11 @@ def sha256_workspace_file(workspace: str | Path, relative_path: str) -> dict:
 
 MAGIC_SIGNATURES = [
     (b"MZ", "Windows PE executable"),
-    (b"\\x7fELF", "ELF executable or object"),
+    (b"\x7fELF", "ELF executable or object"),
     (b"%PDF-", "PDF document"),
-    (b"PK\\x03\\x04", "ZIP archive or ZIP-based document"),
-    (b"\\x89PNG\\r\\n\\x1a\\n", "PNG image"),
-    (b"\\xff\\xd8\\xff", "JPEG image"),
+    (b"PK\x03\x04", "ZIP archive or ZIP-based document"),
+    (b"\x89PNG\r\n\x1a\n", "PNG image"),
+    (b"\xff\xd8\xff", "JPEG image"),
     (b"GIF87a", "GIF image"),
     (b"GIF89a", "GIF image"),
 ]
