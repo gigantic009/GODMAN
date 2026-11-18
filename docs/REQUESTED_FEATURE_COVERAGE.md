@@ -58,7 +58,7 @@ Status meanings: Implemented (limited) = narrow code exists; Designed = architec
 | Controlled self-update | Not implemented | No signed releases, SBOM, dependency pinning, staged update, owner approval or rollback. |
 | Safe rollback / kill switch | Not implemented | Architecture calls for these; no complete operational mechanism. |
 
-## Build order and release gates
+| One-command Windows endpoint checkup | Implemented (limited) | `/checkup` aggregates point-in-time Defender posture, firewall inventory and selected events; it performs no remediation and is not continuous monitoring. |\n\n## Build order and release gates
 
 1. Owner trust foundation: Windows account SID binding, secure bootstrap, owner-only approval, protected configuration, signed code/policy and recovery.
 2. Endpoint firewall: capture effective policy, generate a reviewable diff, back up, apply one approved change, verify, and roll back on failure.
