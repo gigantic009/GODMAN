@@ -21,6 +21,7 @@ Commands:
   /diagnostics          Read basic system and disk information
   /cyber                Show GODMAN cybersecurity specialization areas
   /posture              Read Windows security posture (no changes)
+  /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
   /markets              Explain available market analytics
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
@@ -131,6 +132,12 @@ def main() -> None:
                 print(f"- {domain.replace('_', ' ').title()}: {description}")
             print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file, collect_windows_security_posture, inspect_zip_safety")
             print("Testing policy: authorized assets and isolated labs only.")
+            continue
+        if raw == "/firewall":
+            try:
+                print(json.dumps(registry.execute("inspect_windows_firewall"), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"Firewall inspection unavailable: {type(exc).__name__}: {exc}")
             continue
         if raw == "/posture":
             try:
