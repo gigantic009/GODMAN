@@ -5,7 +5,7 @@ import zipfile
 from pathlib import Path, PurePosixPath, PureWindowsPath
 
 
-MAX_ARCHIVE_BYTES = 50 * 1024 * 1024
+MAX_ARCHIVE_BYTES = 10 * 1024 * 1024
 MAX_ARCHIVE_MEMBERS = 10000
 MAX_DECLARED_EXPANSION_BYTES = 2 * 1024 * 1024 * 1024
 SUSPICIOUS_RATIO = 100.0
@@ -46,7 +46,7 @@ def inspect_zip_safety(workspace: str | Path, relative_path: str) -> dict:
             name = item.filename
             posix = PurePosixPath(name)
             windows = PureWindowsPath(name)
-            if posix.is_absolute() or windows.is_absolute() or windows.drive or ".." in posix.parts:
+            if posix.is_absolute() or windows.is_absolute() or windows.drive or ".." in posix.parts or ".." in windows.parts:
                 suspicious_paths.append(name[:240])
             if name.lower().endswith((".zip", ".7z", ".rar", ".tar", ".gz", ".bz2", ".xz")):
                 nested_archives.append(name[:240])
