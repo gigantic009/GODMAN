@@ -11,6 +11,7 @@ from typing import Any, Callable
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
 from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
 from .markets import market_snapshot, detect_price_events
+from .security_posture import collect_windows_security_posture
 
 
 @dataclass(frozen=True)
@@ -190,5 +191,13 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
             "closes": {"type": "array", "items": {"type": "number"}, "description": "At least 50 chronological closing prices; validated by the tool"},
             "move_threshold": {"type": "number", "minimum": 0.001, "maximum": 0.99},
         }, ["closes"]),
+    ))
+
+    registry.register(Tool(
+        "collect_windows_security_posture",
+        "Read a bounded point-in-time Windows Defender, Firewall, BitLocker, and recent hotfix status snapshot. Read-only; no remediation or network scan.",
+        "read",
+        collect_windows_security_posture,
+        _object({}, []),
     ))
     return registry
