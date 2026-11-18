@@ -1,5 +1,6 @@
 """Deterministic market analytics over supplied chronological price observations."""
 from statistics import mean, pstdev
+from math import isfinite
 
 
 def _series(values, minimum=1):
@@ -21,7 +22,11 @@ def sma(prices, period):
 def ema(prices, period):
     if period < 1:
         raise ValueError("period must be positive.")
-    v = _series(prices, period)
+    if not isinstance(prices, (list, tuple)) or len(prices) < period:
+        raise ValueError(f"Need at least {period} observations.")
+    v = [float(x) for x in prices]
+    if any(not isfinite(x) for x in v):
+        raise ValueError("Values must be finite.")
     alpha = 2 / (period + 1)
     current = mean(v[:period])
     out = [current]
