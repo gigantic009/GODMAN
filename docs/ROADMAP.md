@@ -168,7 +168,9 @@ and recovery path are mandatory.
 - [ ] Build sole-owner Windows SID binding, signed policy/configuration and protected recovery controls
 - [ ] Implement firewall backup, dry-run diff, per-change owner approval, apply, verification and rollback
 - [ ] Inventory the actual Windows endpoint and supported security controls; confirm Defender/Firewall/BitLocker posture on owner's machine
-- [ ] Add bounded Windows Defender/Security event collection with redaction and retention
+- [x] Add bounded read-only Windows Defender/Security/System event collection with basic message redaction (manual query only)
+- [x] Add offline URL structure triage (no network/reputation lookup)
+- [ ] Add continuous event collection, durable retention, correlation and alert delivery
 - [ ] Evaluate and deploy Wazuh agent/manager architecture in a resource-appropriate lab; no production install until reviewed
 - [ ] Identify the exact home router make/model/firmware and determine whether a supported local API exists
 - [ ] Add read-only router posture/log adapter for a supported model only
