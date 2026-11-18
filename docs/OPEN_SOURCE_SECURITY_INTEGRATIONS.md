@@ -19,6 +19,12 @@ through narrow adapters and remain independently maintained.
 | OpenCTI | https://github.com/OpenCTI-Platform/opencti | Threat intelligence knowledge graph and connectors |
 | ClamAV | https://github.com/Cisco-Talos/clamav | Signature-based malware scanning |
 | TheHive | https://github.com/TheHive-Project/TheHive | Incident response case management |
+| CrowdSec | https://github.com/crowdsecurity/crowdsec | Behavioral detection and collaborative IP reputation; optional local enforcement only after review |
+| Nuclei | https://github.com/projectdiscovery/nuclei | Template-based vulnerability checks; strict owned-target allow-list and safe templates only |
+| Trivy | https://github.com/aquasecurity/trivy | Vulnerability, misconfiguration, and secret scanning for repositories, images and filesystems |
+| Gitleaks | https://github.com/gitleaks/gitleaks | Detect accidentally committed credentials and tokens; redact findings |
+| Lynis | https://github.com/CISOfy/lynis | Host security auditing and hardening checks, primarily Unix-like systems |
+| Falco | https://github.com/falcosecurity/falco | Runtime threat detection for Linux/container/cloud workloads |
 
 ## Integration principles
 
