@@ -22,6 +22,8 @@ Commands:
   /cyber                Show GODMAN cybersecurity specialization areas
   /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
+  /events               Collect selected local Windows security events (read-only)
+  /url URL              Perform offline structural phishing URL triage
   /markets              Explain available market analytics
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
@@ -132,6 +134,18 @@ def main() -> None:
                 print(f"- {domain.replace('_', ' ').title()}: {description}")
             print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file, collect_windows_security_posture, inspect_zip_safety")
             print("Testing policy: authorized assets and isolated labs only.")
+            continue
+        if raw == "/events":
+            try:
+                print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"Event collection unavailable: {type(exc).__name__}: {exc}")
+            continue
+        if raw.startswith("/url "):
+            try:
+                print(json.dumps(registry.execute("analyze_url_structure", {"url": raw[len("/url "):]}), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"URL analysis unavailable: {type(exc).__name__}: {exc}")
             continue
         if raw == "/firewall":
             try:
