@@ -1,21 +1,31 @@
 """Terminal user interface for Phase 1."""
-from openai import APIConnectionError, APIStatusError, AuthenticationError, RateLimitError
+from openai import (
+    APIConnectionError,
+    APIStatusError,
+    AuthenticationError,
+    RateLimitError,
+)
+
 from .config import get_settings
 from .core import AssistantCore
 
 
 def main() -> None:
     settings = get_settings()
-    name = settings["assistant_name"] or "GODMAN"
+    name = settings.assistant_name
 
-    if not settings["api_key"] or settings["api_key"] == "put_your_api_key_here":
+    if not settings.api_key or settings.api_key == "put_your_api_key_here":
         print("Setup needed: add your API key to the .env file.")
         print("Create an API key at https://platform.openai.com/api-keys")
         return
 
+    if not settings.model:
+        print("Setup needed: OPENAI_MODEL cannot be empty.")
+        return
+
     assistant = AssistantCore(
-        api_key=settings["api_key"],
-        model=settings["model"],
+        api_key=settings.api_key,
+        model=settings.model,
         assistant_name=name,
     )
 
@@ -37,6 +47,8 @@ def main() -> None:
 
         try:
             print(f"\n{name}: {assistant.respond(user_text)}\n")
+        except ValueError as exc:
+            print(f"\n{name}: {exc}\n")
         except AuthenticationError:
             print("\nAuthentication failed. Check OPENAI_API_KEY in .env.\n")
         except RateLimitError:
@@ -46,4 +58,5 @@ def main() -> None:
         except APIStatusError as exc:
             print(f"\nAPI error ({exc.status_code}). Check model name and API access.\n")
         except Exception as exc:
-            print(f"\nUnexpected error: {type(exc).__name__}: {exc}\n")
+            # Avoid printing request payloads or credentials in unexpected errors.
+            print(f"\nUnexpected error: {type(exc).__name__}. Check the console setup and retry.\n")
