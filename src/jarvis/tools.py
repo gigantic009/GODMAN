@@ -12,6 +12,7 @@ from .security import ApprovalRequired, AuditLog, SecurityPolicy
 from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
 from .markets import market_snapshot, detect_price_events
 from .security_posture import collect_windows_security_posture
+from .archive_safety import inspect_zip_safety
 
 
 @dataclass(frozen=True)
@@ -199,5 +200,13 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         collect_windows_security_posture,
         _object({}, []),
+    ))
+
+    registry.register(Tool(
+        "inspect_zip_safety",
+        "Inspect ZIP central-directory metadata for suspicious expansion ratios, nested archives, path traversal names, and symlink entries. Never extracts or executes members.",
+        "read",
+        lambda relative_path: inspect_zip_safety(workspace, relative_path),
+        _object({"relative_path": {"type": "string"}}, ["relative_path"]),
     ))
     return registry
