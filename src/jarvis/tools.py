@@ -1,11 +1,10 @@
 """Explicit, allow-listed local tools. No arbitrary shell execution exists here."""
 from __future__ import annotations
 
-import os
 import platform
 import shutil
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
@@ -18,6 +17,7 @@ class Tool:
     description: str
     risk: str
     handler: Callable[..., Any]
+    parameters: dict[str, Any] = field(default_factory=lambda: {"type": "object", "properties": {}, "additionalProperties": False})
 
 
 class ToolRegistry:
@@ -32,9 +32,20 @@ class ToolRegistry:
         self._tools[tool.name] = tool
 
     def describe(self) -> list[dict[str, str]]:
+        return [{"name": t.name, "description": t.description, "risk": t.risk}
+                for t in self._tools.values()]
+
+    def model_tools(self) -> list[dict[str, Any]]:
+        """Return OpenAI Responses API function definitions."""
         return [
-            {"name": t.name, "description": t.description, "risk": t.risk}
-            for t in self._tools.values()
+            {
+                "type": "function",
+                "name": tool.name,
+                "description": f"{tool.description} Risk level: {tool.risk}.",
+                "parameters": tool.parameters,
+                "strict": True,
+            }
+            for tool in self._tools.values()
         ]
 
     def execute(self, name: str, arguments: dict[str, Any] | None = None) -> Any:
@@ -56,24 +67,17 @@ class ToolRegistry:
 
 
 def system_summary() -> dict[str, str]:
-    return {
-        "os": platform.platform(),
-        "system": platform.system(),
-        "release": platform.release(),
-        "machine": platform.machine(),
-        "python": platform.python_version(),
-        "processor": platform.processor() or "Unknown",
-    }
+    return {"os": platform.platform(), "system": platform.system(),
+            "release": platform.release(), "machine": platform.machine(),
+            "python": platform.python_version(), "processor": platform.processor() or "Unknown"}
 
 
 def disk_summary(path: str = ".") -> dict[str, int | str]:
     usage = shutil.disk_usage(path)
-    return {
-        "path": str(Path(path).resolve()),
-        "total_gb": round(usage.total / (1024 ** 3), 2),
-        "used_gb": round(usage.used / (1024 ** 3), 2),
-        "free_gb": round(usage.free / (1024 ** 3), 2),
-    }
+    return {"path": str(Path(path).resolve()),
+            "total_gb": round(usage.total / (1024 ** 3), 2),
+            "used_gb": round(usage.used / (1024 ** 3), 2),
+            "free_gb": round(usage.free / (1024 ** 3), 2)}
 
 
 def list_workspace_files(workspace: str, relative_path: str = ".") -> list[str]:
@@ -115,13 +119,8 @@ def create_workspace_file(workspace: str, relative_path: str, content: str) -> s
 
 
 def open_allowlisted_app(app_name: str) -> str:
-    """Launch a small named application allow-list; never accepts raw commands."""
-    commands = {
-        "notepad": ["notepad.exe"],
-        "calculator": ["calc.exe"],
-        "paint": ["mspaint.exe"],
-        "vscode": ["code"],
-    }
+    commands = {"notepad": ["notepad.exe"], "calculator": ["calc.exe"],
+                "paint": ["mspaint.exe"], "vscode": ["code"]}
     key = app_name.strip().lower()
     if key not in commands:
         raise ValueError(f"App is not allow-listed. Choose: {', '.join(commands)}")
@@ -131,21 +130,28 @@ def open_allowlisted_app(app_name: str) -> str:
     return f"Launched {key}."
 
 
-def build_default_registry(
-    data_dir: str | Path,
-    workspace: str | Path,
-    policy: SecurityPolicy | None = None,
-) -> ToolRegistry:
-    data_dir = Path(data_dir)
-    audit = AuditLog(data_dir / "audit.sqlite3")
+def _object(properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
+    return {"type": "object", "properties": properties, "required": required, "additionalProperties": False}
+
+
+def build_default_registry(data_dir: str | Path, workspace: str | Path,
+                           policy: SecurityPolicy | None = None) -> ToolRegistry:
+    audit = AuditLog(Path(data_dir) / "audit.sqlite3")
     registry = ToolRegistry(policy or SecurityPolicy(), audit)
-    registry.register(Tool("system_summary", "Read basic operating-system and Python information.", "read", system_summary))
-    registry.register(Tool("disk_summary", "Read disk capacity for a path.", "read", disk_summary))
-    registry.register(Tool("list_workspace_files", "List entries inside the configured workspace.", "read",
-                           lambda relative_path=".": list_workspace_files(str(workspace), relative_path)))
-    registry.register(Tool("read_workspace_file", "Read a UTF-8 file inside the configured workspace.", "read",
-                           lambda relative_path, max_chars=12000: read_workspace_file(str(workspace), relative_path, max_chars)))
-    registry.register(Tool("create_workspace_file", "Create a new file inside the workspace; never overwrites.", "write",
-                           lambda relative_path, content: create_workspace_file(str(workspace), relative_path, content)))
-    registry.register(Tool("open_app", "Launch one of the explicitly allow-listed desktop apps.", "system", open_allowlisted_app))
+    registry.register(Tool("system_summary", "Read basic operating-system and Python information.", "read",
+                           system_summary, _object({}, [])))
+    registry.register(Tool("disk_summary", "Read disk capacity for a path.", "read", disk_summary,
+                           _object({"path": {"type": "string", "description": "Drive or directory path", "default": "."}}, [])))
+    registry.register(Tool("list_workspace_files", "List entries inside the configured GODMAN workspace.", "read",
+                           lambda relative_path: list_workspace_files(str(workspace), relative_path),
+                           _object({"relative_path": {"type": "string"}}, ["relative_path"])))
+    registry.register(Tool("read_workspace_file", "Read a UTF-8 file inside the configured GODMAN workspace.", "read",
+                           lambda relative_path: read_workspace_file(str(workspace), relative_path),
+                           _object({"relative_path": {"type": "string"}}, ["relative_path"])))
+    registry.register(Tool("create_workspace_file", "Create a new file inside the workspace; never overwrites. Requires user approval.", "write",
+                           lambda relative_path, content: create_workspace_file(str(workspace), relative_path, content),
+                           _object({"relative_path": {"type": "string"}, "content": {"type": "string"}}, ["relative_path", "content"])))
+    registry.register(Tool("open_app", "Launch an explicitly allow-listed desktop application. Requires user approval.", "system",
+                           open_allowlisted_app,
+                           _object({"app_name": {"type": "string", "enum": ["notepad", "calculator", "paint", "vscode"]},}, ["app_name"])))
     return registry
