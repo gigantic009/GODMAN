@@ -36,6 +36,7 @@ surface and mapped to preventive controls, telemetry, response, and current gaps
 - Local SHA-256 and static file metadata/magic/entropy inspection.
 - A read-only Windows posture collector for Defender, Windows Firewall profiles,
   BitLocker status, and recent hotfixes (availability depends on OS/features/permissions).
+- An approval-gated Microsoft Defender custom scan for a selected workspace file or folder; it is not a whole-device or continuous scan.
 - Explicit tool allow-list, path boundaries, approval for writes/system actions, and audit log.
 
 ### Not implemented by this catalogue alone
