@@ -68,6 +68,7 @@ Then enter `/voice` inside GODMAN. It uses push-to-talk recording, local faster-
 - `/help` — list commands
 - `/diagnostics` — read-only OS and disk overview
 - `/tools` — list registered tools and risk levels
+- `/audit` — inspect recent local tool audit events
 - `/remember TEXT` — save a local note
 - `/recall WORDS` — search saved notes
 - `/memories` — list recent notes
@@ -85,6 +86,8 @@ Normal messages are sent to the model. The model may request tools from the regi
 Optional environment overrides:
 - `GODMAN_DATA_DIR`
 - `GODMAN_WORKSPACE`
+
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for milestone status and verification gates.
 
 ## Tests
 Run the offline test suite:
