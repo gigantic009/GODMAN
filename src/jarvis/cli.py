@@ -10,7 +10,7 @@ from .core import AssistantCore
 from .diagnostics import collect_diagnostics
 from .memory import MemoryStore
 from .security import ApprovalRequired, SecurityPolicy
-from .tools import build_default_registry
+from .tools import Tool, build_default_registry
 
 
 def _print_help() -> None:
@@ -68,6 +68,30 @@ def main() -> None:
     workspace.mkdir(parents=True, exist_ok=True)
     memory = MemoryStore(data_dir / "memory.sqlite3")
     registry = build_default_registry(data_dir, workspace, SecurityPolicy())
+    registry.register(Tool(
+        "remember_note",
+        "Save a durable user-approved note to GODMAN's local memory.",
+        "write",
+        lambda content: {"memory_id": memory.remember(content)},
+        {"type": "object", "properties": {"content": {"type": "string"}},
+         "required": ["content"], "additionalProperties": False},
+    ))
+    registry.register(Tool(
+        "search_memories",
+        "Search GODMAN's saved local notes by keyword.",
+        "read",
+        lambda query: memory.search(query),
+        {"type": "object", "properties": {"query": {"type": "string"}},
+         "required": ["query"], "additionalProperties": False},
+    ))
+    registry.register(Tool(
+        "forget_memory",
+        "Delete a saved memory by its numeric ID. Requires approval.",
+        "write",
+        lambda memory_id: {"deleted": memory.forget(memory_id)},
+        {"type": "object", "properties": {"memory_id": {"type": "integer"}},
+         "required": ["memory_id"], "additionalProperties": False},
+    ))
     assistant = AssistantCore(
         api_key=settings.api_key, model=settings.model,
         assistant_name=settings.assistant_name, memory=memory,
