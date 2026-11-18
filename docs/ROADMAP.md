@@ -164,6 +164,9 @@ and recovery path are mandatory.
 - [x] Review CERT-In AI-assisted vulnerability defence and AI-agent risk guidance
 - [x] Review NIST CSF 2.0, Microsoft Windows security controls, Wazuh, Suricata, OPNsense, Tailscale, and CISA home-network/incident response material
 - [x] Record adaptive firewall design, trust boundaries, autonomy policy, and implementation mapping in SECURITY_RESEARCH_BASELINE.md
+- [x] Add read-only Windows Firewall profile/rule inventory and conservative baseline planner (no changes)
+- [ ] Build sole-owner Windows SID binding, signed policy/configuration and protected recovery controls
+- [ ] Implement firewall backup, dry-run diff, per-change owner approval, apply, verification and rollback
 - [ ] Inventory the actual Windows endpoint and supported security controls; confirm Defender/Firewall/BitLocker posture on owner's machine
 - [ ] Add bounded Windows Defender/Security event collection with redaction and retention
 - [ ] Evaluate and deploy Wazuh agent/manager architecture in a resource-appropriate lab; no production install until reviewed
