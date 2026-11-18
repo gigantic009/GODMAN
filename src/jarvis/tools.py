@@ -187,7 +187,7 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
             "price_events": detect_price_events(closes, move_threshold),
         },
         _object({
-            "closes": {"type": "array", "items": {"type": "number"}, "minItems": 50},
+            "closes": {"type": "array", "items": {"type": "number"}, "description": "At least 50 chronological closing prices; validated by the tool"},
             "move_threshold": {"type": "number", "minimum": 0.001, "maximum": 0.99},
         }, ["closes"]),
     ))
