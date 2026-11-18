@@ -101,7 +101,7 @@ def main() -> None:
         tool_registry=registry,
     )
 
-    print(f"\n{settings.assistant_name} — Phases 1-5")
+    print(f"\n{settings.assistant_name} — Personal AI + Cybersecurity Division")
     print(f"Persistent data: {data_dir.resolve()}")
     print(f"Tool workspace: {workspace.resolve()}")
     print("Type /help for commands or /exit to quit.\n")
@@ -127,7 +127,7 @@ def main() -> None:
             print("GODMAN Cybersecurity Division")
             for domain, description in SECURITY_DOMAINS.items():
                 print(f"- {domain.replace('_', ' ').title()}: {description}")
-            print("\\nAvailable local tools: analyze_security_log, sha256_workspace_file")
+            print("\nAvailable local tools: analyze_security_log, sha256_workspace_file")
             print("Testing policy: authorized assets and isolated labs only.")
             continue
         if raw == "/tools":
