@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
-from .cybersecurity import analyze_security_log, sha256_workspace_file
+from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
 
 
 @dataclass(frozen=True)
@@ -160,6 +160,13 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "Run bounded defensive heuristic triage on a .log, .txt, .jsonl, or .csv file inside the GODMAN workspace. Does not prove compromise.",
         "read",
         lambda relative_path: analyze_security_log(workspace, relative_path),
+        _object({"relative_path": {"type": "string"}}, ["relative_path"]),
+    ))
+    registry.register(Tool(
+        "inspect_file_static",
+        "Safely inspect file metadata, magic bytes, SHA-256, and entropy for a file inside the GODMAN workspace. Never executes or uploads the file.",
+        "read",
+        lambda relative_path: inspect_file_static(workspace, relative_path),
         _object({"relative_path": {"type": "string"}}, ["relative_path"]),
     ))
     registry.register(Tool(
