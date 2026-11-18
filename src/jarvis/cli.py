@@ -12,6 +12,7 @@ from .memory import MemoryStore
 from .security import ApprovalRequired, SecurityPolicy
 from .tools import Tool, build_default_registry
 from .cybersecurity import SECURITY_DOMAINS
+from .checkup import run_endpoint_checkup
 
 
 def _print_help() -> None:
@@ -20,7 +21,7 @@ Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
   /cyber                Show GODMAN cybersecurity specialization areas
-  /posture              Read Windows security posture (no changes)
+  /checkup              Run consolidated read-only Windows endpoint checkup\n  /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
   /events               Collect selected local Windows security events (read-only)
   /url URL              Perform offline structural phishing URL triage
@@ -135,7 +136,7 @@ def main() -> None:
             print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file, collect_windows_security_posture, inspect_zip_safety")
             print("Testing policy: authorized assets and isolated labs only.")
             continue
-        if raw == "/events":
+        if raw == "/checkup":\n            try:\n                print(json.dumps(run_endpoint_checkup(), indent=2, ensure_ascii=False))\n            except Exception as exc:\n                print(f"Endpoint checkup unavailable: {type(exc).__name__}: {exc}")\n            continue\n        if raw == "/events":
             try:
                 print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
             except Exception as exc:
