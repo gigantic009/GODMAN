@@ -19,6 +19,7 @@ Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
   /tools                List local tools and their risk level
+  /audit                Show recent local tool audit events
   /tool NAME [JSON]     Run an allow-listed tool manually
   /remember TEXT        Save a durable note in local SQLite memory
   /recall WORDS         Search saved memories
@@ -122,6 +123,9 @@ def main() -> None:
             continue
         if raw == "/tools":
             print(json.dumps(registry.describe(), indent=2))
+            continue
+        if raw == "/audit":
+            print(json.dumps(registry.audit.recent(20), indent=2, ensure_ascii=False))
             continue
         if raw.startswith("/tool "):
             parts = raw.split(" ", 2)
