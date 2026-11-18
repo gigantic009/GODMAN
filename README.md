@@ -42,6 +42,7 @@ Current local security tools:
 - `sha256_workspace_file` — local SHA-256 hashing without execution or upload.
 - `inspect_file_static` — basic file-type, hash, and entropy inspection without execution.
 - `collect_windows_security_posture` — read-only Windows Defender, Firewall, BitLocker, and recent hotfix snapshot; use `/posture`.
+- `inspect_zip_safety` — inspect ZIP expansion ratios and unsafe member paths without extracting or executing files.
 
 These tools are analyst aids, not a certified scanner or proof of compromise. Remote scanning, exploitation, automatic containment, malware execution, and reputation lookups are not enabled. See [`docs/DEFENSIVE_THREAT_MODEL.md`](docs/DEFENSIVE_THREAT_MODEL.md), [`docs/OPEN_SOURCE_SECURITY_INTEGRATIONS.md`](docs/OPEN_SOURCE_SECURITY_INTEGRATIONS.md), [`docs/CYBERSECURITY.md`](docs/CYBERSECURITY.md), [`docs/CYBERSECURITY_REFERENCES.md`](docs/CYBERSECURITY_REFERENCES.md), and [`docs/SECURITY.md`](docs/SECURITY.md).
 
