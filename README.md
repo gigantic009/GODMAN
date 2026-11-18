@@ -40,6 +40,7 @@ GODMAN includes a defensive cybersecurity specialization covering governance, ne
 Current local security tools:
 - `analyze_security_log` — bounded, read-only heuristic triage of supported log files in the GODMAN workspace.
 - `sha256_workspace_file` — local SHA-256 hashing without execution or upload.
+- `inspect_file_static` — basic file-type, hash, and entropy inspection without execution.
 
 These tools are analyst aids, not a certified scanner or proof of compromise. Remote scanning, exploitation, automatic containment, malware execution, and reputation lookups are not enabled. See [`docs/CYBERSECURITY.md`](docs/CYBERSECURITY.md), [`docs/CYBERSECURITY_REFERENCES.md`](docs/CYBERSECURITY_REFERENCES.md), and [`docs/SECURITY.md`](docs/SECURITY.md).
 
