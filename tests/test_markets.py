@@ -19,6 +19,8 @@ class MarketAnalyticsTests(unittest.TestCase):
         prices = [100+i*0.7+(i%4) for i in range(40)]
         self.assertEqual(len(bollinger_bands(prices, 10)), 31)
         self.assertTrue(macd(prices))
+        falling = [200-i*1.3 for i in range(40)]
+        self.assertTrue(macd(falling))
 
     def test_price_events(self):
         events = detect_price_events([100,105,98], 0.04)
