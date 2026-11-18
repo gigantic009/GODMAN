@@ -62,3 +62,43 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [ ] Add OWASP ZAP integration with explicit target allow-lists and safe scan profiles
 - [ ] Add network telemetry ingestion and packet analysis
 - [ ] Add forensics workflows with evidence integrity and chain-of-custody records
+
+
+## GODMAN Intelligence Platform — expanded mission
+
+### Cybersecurity operations (defensive, owner-authorized)
+- [ ] Windows endpoint inventory and hardening assessment (read-only first)
+- [ ] Network asset discovery and passive telemetry ingestion
+- [ ] Packet capture parsing and protocol anomaly detection
+- [ ] Endpoint event collection and process-tree investigation
+- [ ] SIEM connector and Sigma rule validation
+- [ ] YARA-X evaluation for static sample scanning in isolation
+- [ ] Threat intelligence enrichment with source, timestamp, confidence, and expiry
+- [ ] CVE/KEV and vendor advisory correlation against software inventory
+- [ ] Incident case management, evidence hashing, timeline, and chain of custody
+- [ ] Safe containment playbooks with per-action confirmation and rollback plan
+- [ ] Cloud posture and identity configuration assessment
+- [ ] Vulnerability scanning limited to explicitly allow-listed owned assets
+
+### Financial research and market intelligence
+- [x] Pure-Python technical indicators: SMA, EMA, RSI, MACD, Bollinger Bands
+- [x] Historical volatility, drawdown, and threshold-based price event detection
+- [x] Financial research policy: source, timestamp, uncertainty, risk, no fabricated live data
+- [ ] Market-data provider abstraction with Indian and global exchange coverage
+- [ ] Live/delayed quote and OHLCV ingestion with exchange timestamps
+- [ ] Real-time watchlists, price/volume alerts, and market-session awareness
+- [ ] Corporate actions, splits, dividends, and symbol mapping
+- [ ] Company fundamentals, annual reports, earnings, and exchange filing ingestion
+- [ ] News and event intelligence with entity resolution and source credibility
+- [ ] Valuation models: DCF, comparables, multiples, scenario/sensitivity analysis
+- [ ] Portfolio exposure, correlation, drawdown, VaR/expected shortfall research
+- [ ] Backtesting engine with transaction costs, slippage, survivorship and look-ahead controls
+- [ ] Research reports with bull/base/bear thesis, catalysts, risks, and citations
+- [ ] Paper-trading simulation only; brokerage execution excluded until separately reviewed
+
+### Platform reliability and governance
+- [ ] Run complete unit suite locally and verify GitHub Actions
+- [ ] Add integration tests with recorded/synthetic fixtures and no live side effects
+- [ ] Add secrets redaction, retention controls, and per-tool audit provenance
+- [ ] Add monitoring scheduler with opt-in scopes, rate limits, and kill switch
+- [ ] Add plugin/provider health checks and stale-data alarms
