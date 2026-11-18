@@ -109,6 +109,7 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [x] Document control mapping, response priorities, limitations, and security acceptance gates
 - [x] Review major open-source projects and define adapter-first integration strategy
 - [x] Add read-only Windows Defender, Firewall, BitLocker, and hotfix posture snapshot
+- [x] Add bounded ZIP metadata inspection for likely archive bombs and unsafe member paths (no extraction)
 - [x] Add unit tests for posture collector behavior (mocked PowerShell; no machine changes)
 - [x] Add Python 3.10–3.12 GitHub Actions test workflow
 - [ ] Verify the workflow passes on GitHub
