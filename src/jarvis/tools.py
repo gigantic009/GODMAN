@@ -15,6 +15,8 @@ from .security_posture import collect_windows_security_posture
 from .archive_safety import inspect_zip_safety
 from .security_scanning import scan_with_microsoft_defender
 from .windows_firewall import inspect_windows_firewall
+from .windows_events import collect_windows_security_events
+from .url_triage import analyze_url_structure
 
 
 @dataclass(frozen=True)
@@ -217,6 +219,20 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         inspect_windows_firewall,
         _object({}, []),
+    ))
+    registry.register(Tool(
+        "collect_windows_security_events",
+        "Collect a bounded, read-only set of local Defender, Security, and System events with message redaction; point-in-time only.",
+        "read",
+        collect_windows_security_events,
+        _object({}, []),
+    ))
+    registry.register(Tool(
+        "analyze_url_structure",
+        "Offline structural phishing-URL triage. Does not visit, resolve, or submit the URL; heuristic only.",
+        "read",
+        analyze_url_structure,
+        _object({"url": {"type": "string", "minLength": 1, "maxLength": 4096}}, ["url"]),
     ))
     registry.register(Tool(
         "scan_workspace_with_defender",
