@@ -35,6 +35,14 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Cache feeds safely, validate data, enforce freshness and support offline operation.
 - [ ] Never claim a CVE applies without match evidence.
 
+## P3 — Threat analysis and adaptive defense
+- [ ] Build an evidence-backed detection-to-response pipeline (observe, correlate, classify, respond, verify) with confidence and provenance.
+- [ ] Implement root-cause case analysis across indicators, execution, persistence, vulnerabilities, affected assets and configuration gaps.
+- [ ] Add response profiles with dry-run, scoped local containment, approval, audit, rollback and independent verification.
+- [ ] Add privacy-minimized local threat memory, verified feedback, versioned rule updates, expiry and rollback; avoid silent learning from sensitive data.
+- [ ] Define emergency-response policy controls, narrow allow-lists, action budgets, safeguards and kill switch.
+- [ ] Explicitly prohibit hack-back, offensive actions against attacker infrastructure and attribution-based targeting.
+
 ## P3 — Threat analysis
 - [ ] Improve URL triage: IDNA/homograph signals, parsing edge cases, offline-only mode.
 - [ ] Add optional reputable reputation sources with privacy disclosure and consent.
