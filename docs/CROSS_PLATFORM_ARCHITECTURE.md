@@ -99,3 +99,36 @@ An adaptive firewall is a core planned capability, not yet implemented. GODMAN s
 - **Cross-platform:** use a common policy model and platform adapters; clearly report unsupported features and never pretend a rule was enforced when the platform or permissions do not support it.
 
 The adaptive firewall is for defensive control of the owner-authorized host/network. It does not scan, exploit or attack the presumed source of an attack.
+
+
+## Global defensive knowledge update pipeline
+GODMAN should continuously discover newly published defensive knowledge from security researchers, vendor advisories, CERT/CSIRT organizations, standards bodies, reputable open-source projects and approved community sources. This pipeline is planned and must not be represented as implemented until verified.
+
+### Intake and source trust
+- Maintain a configurable source registry with source identity, publication type, trust tier, retrieval method, freshness, license/usage terms and owner-approved scope.
+- Poll sources on bounded schedules; use feeds, APIs, signed releases and publication metadata where available. Respect rate limits, access controls, robots/terms and privacy requirements.
+- Treat retrieved content as untrusted data, never as instructions to the GODMAN agent or its tools.
+- Normalize advisory, technique, indicator, mitigation, detection-rule and version-change records into a provenance-rich format.
+
+### Evaluation and enrichment
+- Verify signatures where provided, source identity, integrity, publication/update time, duplicates, conflicts and superseded records.
+- Extract defensive concepts, affected versions, prerequisites, evidence requirements, mitigations, detection opportunities and limitations.
+- Cross-reference supported frameworks (such as ATT&CK), vendor advisories, vulnerability identifiers, platform capabilities and existing rules.
+- Assign quality/confidence, relevance, freshness and compatibility scores; keep unresolved conflicts and uncertainty visible.
+- Do not operationalize attack instructions, runnable payloads, untrusted commands or exploit code. Extract sanitized behavior summaries and defensive implications only.
+
+### Test, stage and deploy
+- Convert approved knowledge into candidate detection/mitigation content, simulated cases, rule proposals or user-facing guidance.
+- Test candidates in fixtures and controlled lab environments; measure regressions, false positives, resource cost and platform compatibility.
+- Require signed/versioned packages, staged deployment, atomic update, rollback, expiration and audit provenance.
+- Automatic promotion is limited to explicitly configured, low-impact, tested defensive updates. High-impact policy changes require approval or narrowly bounded emergency policy.
+- Provide a changelog, source attribution, confidence, coverage impact and rollback control.
+
+### Feedback and contribution
+- Collect local feedback such as confirmed detections, false positives and verified remediation outcomes with privacy minimization and consent.
+- Keep local observations separate from shared/global knowledge. Do not upload sensitive logs, files or personal data without explicit consent and disclosure.
+- Community contributions must undergo provenance, license, security, compatibility and regression review before publication in a shared catalog.
+- Use a versioned knowledge graph linking source → claim/technique → telemetry → detection → defensive action → verification test.
+
+### Non-goals
+The pipeline is not a repository or deployment channel for executable offensive payloads, hack-back tactics, unauthorized scanning or retaliatory attacks. It updates GODMAN's defensive knowledge and controls for owner-authorized assets.
