@@ -31,6 +31,11 @@ class MarketAnalyticsTests(unittest.TestCase):
         self.assertEqual(result["trend_observation"], "short_average_above_long")
         self.assertIn("not a forecast", result["interpretation"])
 
+    def test_nonfinite_and_boolean_prices_are_rejected(self):
+        for bad in (float("nan"), float("inf"), float("-inf"), True):
+            with self.assertRaises(ValueError):
+                sma([1, bad, 3], 2)
+
     def test_invalid_inputs(self):
         with self.assertRaises(ValueError): sma([1,2], 3)
         with self.assertRaises(ValueError): detect_price_events([1,2], 1.5)
