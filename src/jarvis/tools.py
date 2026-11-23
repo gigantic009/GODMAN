@@ -222,6 +222,8 @@ class ToolRegistry:
         if tool.name in self._tools:
             raise ValueError(f"Tool already registered: {tool.name}")
         schema = copy.deepcopy(tool.parameters)
+        if schema.get("type") != "object":
+            raise ValueError("Tool argument schemas must have an object root.")
         _validate_schema_definition(schema)
         # Store an independent schema snapshot; caller mutation cannot alter dispatch.
         registered = Tool(tool.name, tool.description, tool.risk, tool.handler, schema)
