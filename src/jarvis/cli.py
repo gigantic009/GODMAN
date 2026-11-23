@@ -21,11 +21,12 @@ Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
   /cyber                Show GODMAN cybersecurity specialization areas
-  /checkup              Run consolidated read-only Windows endpoint checkup\n  /posture              Read Windows security posture (no changes)
+  /checkup              Run consolidated read-only Windows endpoint checkup
+  /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
   /events               Collect selected local Windows security events (read-only)
+  /persistence          Inspect startup keys, scheduled tasks and services (read-only)
   /url URL              Perform offline structural phishing URL triage
-  /markets              Explain available market analytics
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
   /tool NAME [JSON]     Run an allow-listed tool manually
@@ -136,7 +137,19 @@ def main() -> None:
             print("\nAvailable local tools: analyze_security_log, inspect_file_static, sha256_workspace_file, collect_windows_security_posture, inspect_zip_safety")
             print("Testing policy: authorized assets and isolated labs only.")
             continue
-        if raw == "/checkup":\n            try:\n                print(json.dumps(run_endpoint_checkup(), indent=2, ensure_ascii=False))\n            except Exception as exc:\n                print(f"Endpoint checkup unavailable: {type(exc).__name__}: {exc}")\n            continue\n        if raw == "/events":
+        if raw == "/checkup":
+            try:
+                print(json.dumps(run_endpoint_checkup(), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"Endpoint checkup unavailable: {type(exc).__name__}: {exc}")
+            continue
+        if raw == "/persistence":
+            try:
+                print(json.dumps(registry.execute("inspect_windows_persistence"), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"Persistence inventory unavailable: {type(exc).__name__}: {exc}")
+            continue
+        if raw == "/events":
             try:
                 print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
             except Exception as exc:
@@ -159,12 +172,6 @@ def main() -> None:
                 print(json.dumps(registry.execute("collect_windows_security_posture"), indent=2, ensure_ascii=False))
             except Exception as exc:
                 print(f"Posture check unavailable: {type(exc).__name__}: {exc}")
-            continue
-        if raw == "/markets":
-            print("GODMAN Market Intelligence")
-            print("Available model tool: analyze_market_prices (50+ chronological closes required)")
-            print("Calculates moving averages, RSI, volatility, drawdown, and threshold-based price events.")
-            print("No live market feed or trade execution is connected.")
             continue
         if raw == "/tools":
             print(json.dumps(registry.describe(), indent=2))

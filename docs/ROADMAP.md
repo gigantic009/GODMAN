@@ -80,21 +80,6 @@ Phase 6 should add a desktop UI and screen understanding only after the Windows 
 - [ ] Cloud posture and identity configuration assessment
 - [ ] Vulnerability scanning limited to explicitly allow-listed owned assets
 
-### Financial research and market intelligence
-- [x] Pure-Python technical indicators: SMA, EMA, RSI, MACD, Bollinger Bands
-- [x] Historical volatility, drawdown, and threshold-based price event detection
-- [x] Financial research policy: source, timestamp, uncertainty, risk, no fabricated live data
-- [ ] Market-data provider abstraction with Indian and global exchange coverage
-- [ ] Live/delayed quote and OHLCV ingestion with exchange timestamps
-- [ ] Real-time watchlists, price/volume alerts, and market-session awareness
-- [ ] Corporate actions, splits, dividends, and symbol mapping
-- [ ] Company fundamentals, annual reports, earnings, and exchange filing ingestion
-- [ ] News and event intelligence with entity resolution and source credibility
-- [ ] Valuation models: DCF, comparables, multiples, scenario/sensitivity analysis
-- [ ] Portfolio exposure, correlation, drawdown, VaR/expected shortfall research
-- [ ] Backtesting engine with transaction costs, slippage, survivorship and look-ahead controls
-- [ ] Research reports with bull/base/bear thesis, catalysts, risks, and citations
-- [ ] Paper-trading simulation only; brokerage execution excluded until separately reviewed
 
 ### Platform reliability and governance
 - [ ] Run complete unit suite locally and verify GitHub Actions

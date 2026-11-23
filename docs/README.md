@@ -3,9 +3,14 @@
 Use this page to find project documentation by topic.
 
 ## Architecture and planning
+- [Product scope](PRODUCT_SCOPE.md) — mission, limits, and engineering standards.
+- [Diagnostics and security roadmap](SECURITY_DIAGNOSTICS_ROADMAP.md) — prioritized feature plan.
 - [Architecture](ARCHITECTURE.md) — core lifecycle and trust boundaries.
 - [Roadmap](ROADMAP.md) — milestones and verification gates.
 - [Requested feature coverage](REQUESTED_FEATURE_COVERAGE.md) — capability status.
+
+## Security audit
+- [Tool argument schema boundary](audit/TOOL_SCHEMA_BOUNDARY.md) — supported strict schema subset, rejection rules, tests and reference concepts.
 
 ## Cybersecurity
 - [Cybersecurity overview](CYBERSECURITY.md)
@@ -18,6 +23,3 @@ Use this page to find project documentation by topic.
 - [Security policy](SECURITY.md)
 - [Windows firewall milestone](WINDOWS_FIREWALL_MILESTONE.md)
 - [Windows first checkup](WINDOWS_FIRST_CHECKUP.md)
-
-## Market intelligence
-- [Market intelligence](MARKET_INTELLIGENCE.md)
