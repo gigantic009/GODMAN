@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -57,7 +58,21 @@ class AuditLog:
         conn.execute("PRAGMA journal_mode=WAL")
         return conn
 
+    @staticmethod
+    def _redact(details: str) -> str:
+        # Keep audit entries useful while reducing accidental secret leakage.
+        text = str(details)
+        patterns = [
+            (r"(?i)(api[_-]?key|token|password|secret|authorization)\\s*[:=]\\s*[^\\s,;]+", r"\\1=[REDACTED]"),
+            (r"(?i)bearer\\s+[a-z0-9._~+/-]+=*", "Bearer [REDACTED]"),
+            (r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", "[EMAIL]"),
+        ]
+        for pattern, replacement in patterns:
+            text = re.sub(pattern, replacement, text)
+        return text[:2000]
+
     def record(self, tool_name: str, risk: str, outcome: str, details: str = "") -> None:
+        details = self._redact(details)
         with self._connect() as conn:
             conn.execute(
                 "INSERT INTO tool_audit(created_at, tool_name, risk, outcome, details) VALUES (?, ?, ?, ?, ?)",
