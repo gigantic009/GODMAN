@@ -67,7 +67,7 @@ def _freeze_payload(value):
     return value
 
 
-def _validate_timestamp(value: str, label: str) -> None:
+def _normalize_timestamp(value: str, label: str) -> str:
     if not isinstance(value, str) or not value or len(value) > 64:
         raise ValueError(f"{label} must be a bounded timestamp string")
     try:
@@ -76,6 +76,7 @@ def _validate_timestamp(value: str, label: str) -> None:
         raise ValueError(f"{label} must be ISO-8601") from exc
     if parsed.tzinfo is None:
         raise ValueError(f"{label} must include a timezone")
+    return parsed.astimezone(timezone.utc).isoformat()
 
 
 @dataclass(frozen=True)
@@ -99,7 +100,7 @@ class Event:
             raise ValueError("host_id must be a bounded string or None")
         if isinstance(self.schema_version, bool) or not isinstance(self.schema_version, int) or self.schema_version != 1:
             raise ValueError("unsupported event schema version")
-        _validate_timestamp(self.timestamp, "timestamp")
+        object.__setattr__(self, "timestamp", _normalize_timestamp(self.timestamp, "timestamp"))
         if not isinstance(self.data, dict):
             raise TypeError("data must be a dictionary")
         _validate_payload(self.data)
