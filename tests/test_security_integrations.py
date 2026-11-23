@@ -23,6 +23,7 @@ class SecurityToolRegistrationTests(unittest.TestCase):
                 "collect_windows_security_events",
                 "analyze_url_structure",
                 "scan_workspace_with_defender",
+                "inspect_windows_persistence",
             }.issubset(names))
             self.assertNotIn("run_shell_command", names)
             self.assertNotIn("execute_powershell", names)
