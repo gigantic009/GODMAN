@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import platform
+from math import isfinite
 import shutil
 import subprocess
 from dataclasses import dataclass, field
@@ -26,6 +27,55 @@ class Tool:
     risk: str
     handler: Callable[..., Any]
     parameters: dict[str, Any] = field(default_factory=lambda: {"type": "object", "properties": {}, "additionalProperties": False})
+
+
+def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments") -> None:
+    """Validate the supported JSON-schema subset at the runtime tool boundary."""
+    kind = schema.get("type")
+    if kind == "object":
+        if not isinstance(value, dict):
+            raise ValueError(f"{path} must be an object.")
+        for key in schema.get("required", []):
+            if key not in value:
+                raise ValueError(f"{path}.{key} is required.")
+        if schema.get("additionalProperties") is False:
+            extras = set(value) - set(schema.get("properties", {}))
+            if extras:
+                raise ValueError(f"{path} has unexpected keys.")
+        for key, item in value.items():
+            child = schema.get("properties", {}).get(key)
+            if child is not None:
+                _validate_schema(item, child, f"{path}.{key}")
+    elif kind == "array":
+        if not isinstance(value, list):
+            raise ValueError(f"{path} must be an array.")
+        item_schema = schema.get("items")
+        if item_schema:
+            for i, item in enumerate(value):
+                _validate_schema(item, item_schema, f"{path}[{i}]")
+    elif kind == "string":
+        if not isinstance(value, str):
+            raise ValueError(f"{path} must be a string.")
+        if len(value) < schema.get("minLength", 0) or len(value) > schema.get("maxLength", float("inf")):
+            raise ValueError(f"{path} length is outside permitted bounds.")
+    elif kind == "integer":
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"{path} must be an integer.")
+    elif kind == "number":
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(float(value)):
+            raise ValueError(f"{path} must be a finite number.")
+    elif kind == "boolean":
+        if not isinstance(value, bool):
+            raise ValueError(f"{path} must be a boolean.")
+    elif kind is not None:
+        raise ValueError(f"Unsupported schema type: {kind}.")
+    if "enum" in schema and value not in schema["enum"]:
+        raise ValueError(f"{path} is not an allowed value.")
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if "minimum" in schema and value < schema["minimum"]:
+            raise ValueError(f"{path} is below the minimum.")
+        if "maximum" in schema and value > schema["maximum"]:
+            raise ValueError(f"{path} is above the maximum.")
 
 
 class ToolRegistry:
@@ -59,9 +109,10 @@ class ToolRegistry:
     def execute(self, name: str, arguments: dict[str, Any] | None = None) -> Any:
         if name not in self._tools:
             raise KeyError(f"Tool is not allow-listed: {name}")
-        args = arguments or {}
+        args = arguments if arguments is not None else {}
         tool = self._tools[name]
         try:
+            _validate_schema(args, tool.parameters)
             self.policy.authorize(name, args, risk=tool.risk)
             result = tool.handler(**args)
             self.audit.record(name, tool.risk, "success", "Completed")
