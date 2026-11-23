@@ -9,6 +9,9 @@ Use this page to find project documentation by topic.
 - [Roadmap](ROADMAP.md) — milestones and verification gates.
 - [Requested feature coverage](REQUESTED_FEATURE_COVERAGE.md) — capability status.
 
+## Security audit
+- [Tool argument schema boundary](audit/TOOL_SCHEMA_BOUNDARY.md) — supported strict schema subset, rejection rules, tests and reference concepts.
+
 ## Cybersecurity
 - [Cybersecurity overview](CYBERSECURITY.md)
 - [Operations](CYBERSECURITY_OPERATIONS.md)
