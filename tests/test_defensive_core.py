@@ -13,8 +13,19 @@ class DefensiveCoreTests(unittest.TestCase):
         for event in events:
             bus.publish(event)
         self.assertEqual([e.data["pid"] for e in bus.history()], [2, 3])
+        self.assertEqual(bus.history(0), [])
         with self.assertRaises(TypeError):
             bus.publish({})
+        with self.assertRaises(ValueError):
+            Event("x", "source", {}, timestamp="not-a-date")
+        with self.assertRaises(ValueError):
+            Event("x", "source", {}, schema_version=True)
+
+    def test_event_payload_is_snapshotted(self):
+        payload = {"nested": {"items": [1, 2]}}
+        event = Event("x", "source", payload)
+        payload["nested"]["items"].append(3)
+        self.assertEqual(event.data["nested"]["items"], [1, 2])
 
     def test_subscriber_failure_is_isolated(self):
         bus = EventBus()
@@ -34,20 +45,28 @@ class DefensiveCoreTests(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertTrue(decision.requires_approval)
         self.assertTrue(policy.evaluate("terminate_process", approval_granted=True).allowed)
+        with self.assertRaises(ValueError):
+            ActionPolicy(allowed_read_actions={"same"}, approval_actions={"same"})
 
     def test_detection_produces_evidence_finding(self):
         engine = DetectionEngine([DetectionRule("R1", "Encoded process", "process.start", {"encoded": True}, "high", 0.9)])
-        result = engine.process(Event("process.start", "collector", {"encoded": True, "pid": 42}))
+        event = Event("process.start", "collector", {"encoded": True, "pid": 42})
+        result = engine.process(event)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].severity, "high")
         self.assertEqual(result[0].evidence[0].source, "collector")
+        self.assertEqual(result[0].evidence[0].event_id, event.event_id)
         self.assertEqual(engine.process(Event("process.start", "collector", {"encoded": False})), [])
+        with self.assertRaises(ValueError):
+            DetectionRule("R", "title", "x", {"bad": float("nan")})
 
     def test_finding_requires_evidence_and_valid_confidence(self):
         with self.assertRaises(ValueError):
             Finding("R", "title", "high", 0.8, ())
         with self.assertRaises(ValueError):
             Finding("R", "title", "high", 1.1, (Evidence("e", "summary", "source"),))
+        with self.assertRaises(TypeError):
+            Finding("R", "title", "high", 0.8, ("not evidence",))
 
     def test_bus_attachment_emits_findings(self):
         bus = EventBus()
@@ -56,12 +75,15 @@ class DefensiveCoreTests(unittest.TestCase):
         bus.publish(Event("x", "source", {}))
         self.assertEqual(len(engine.findings), 1)
 
-    def test_duplicate_rule_rejected(self):
-        engine = DetectionEngine()
+    def test_duplicate_rule_rejected_and_findings_bounded(self):
+        engine = DetectionEngine(max_findings=2)
         rule = DetectionRule("R", "title", "type", {})
         engine.add_rule(rule)
         with self.assertRaises(ValueError):
             engine.add_rule(rule)
+        for _ in range(3):
+            engine.process(Event("type", "source", {}))
+        self.assertEqual(len(engine.findings), 2)
 
 
 if __name__ == "__main__":
