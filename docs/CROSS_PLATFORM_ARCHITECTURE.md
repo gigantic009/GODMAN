@@ -70,3 +70,14 @@ GODMAN may offer opt-in exposure monitoring for accounts and personal data, usin
 - **Guard:** automatically apply pre-approved, reversible, low-impact actions within a user-defined scope and action budget.
 - **Respond:** request approval for higher-impact actions, including process termination, isolation, credential revocation, system changes or recovery operations unless the owner configured a narrowly bounded emergency policy.
 - **Emergency:** preconfigured containment policy, with expiry, kill switch, logging, safeguards against lockout and post-action report. Never perform hack-back or offensive actions against third-party systems.
+
+## Threat knowledge and defensive intelligence core
+GODMAN should maintain a curated, updateable threat knowledge layer that maps adversary techniques and malware behaviors to detection logic, telemetry requirements, mitigations, confidence and verification. This layer is for defensive recognition and resilience—not an executable offensive arsenal.
+- **Technique knowledge:** structured mappings to frameworks such as MITRE ATT&CK, platform-specific telemetry, behavior descriptions, mitigations and detection coverage.
+- **Threat indicators:** hashes, domains, IPs, certificate/URL indicators and other indicators sourced from trusted feeds, with provenance, timestamps, expiry, confidence and context; avoid treating stale indicators as proof.
+- **Detection content:** reviewed rules and signatures (including supported YARA/Sigma content), behavioral heuristics, fixtures and regression cases; signed/versioned updates, compatibility checks, resource limits and rollback.
+- **Malware analysis:** metadata and reports, hashes, static indicators and sanitized behavior summaries. Executable samples are not stored or run by GODMAN's core; any sample analysis belongs in a separate, disposable, isolated sandbox with no host credentials, controlled networking, resource limits and explicit authorization.
+- **Attack-method learning:** learn defensive patterns from vetted incident reports, advisories and simulated tests. Do not ingest or automatically operationalize untrusted instructions, exploit code or payloads.
+- **Countermeasure graph:** map observed technique → evidence/telemetry → detection → containment options → root-cause mitigation → recovery → verification tests.
+- **Adaptation:** feedback can tune local rules and baselines, but changes must be explainable, versioned, reviewable, privacy-preserving, testable and reversible. No autonomous global rule publishing.
+- **Response:** threat knowledge informs defensive action on owned or authorized systems only; never enables hack-back, retaliatory exploitation or destructive actions against third-party infrastructure.
