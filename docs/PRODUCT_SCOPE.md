@@ -1,11 +1,11 @@
 # GODMAN Product Scope and Engineering Standards
 
 ## Mission
-GODMAN is a Windows-first system diagnostics and defensive cybersecurity assistant. It is intended to help an owner understand device health, assess security posture, investigate suspicious artifacts and events, correlate vulnerability advisories with installed software, and safely plan remediation.
+GODMAN is a cross-platform system diagnostics and defensive cybersecurity assistant. Windows is the first implementation target, not the product boundary. It is intended to help an owner understand device health, assess security posture, investigate suspicious artifacts and events, correlate vulnerability advisories with installed software, and safely plan remediation.
 
-## Core product pillars
-- System diagnostics: Windows and OS information, CPU, memory, storage, processes, services, health signals, performance, logs and reliability.
-- Endpoint security: Microsoft Defender posture, firewall configuration, security events, attack-surface indicators and hardening recommendations.
+See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md) for the OS adapter design and platform roadmap.\n\n## Core product pillars
+- System diagnostics: Windows, Linux, macOS and OS information, CPU, memory, storage, processes, services, health signals, performance, logs and reliability.
+- Endpoint security: platform-native security posture, firewall configuration, security events, attack-surface indicators and hardening recommendations.
 - Vulnerability management: software inventory, CVE/advisory/KEV correlation, prioritization, mitigation guidance and remediation verification.
 - Threat analysis: safe file and archive inspection, hashes, URL structure, log triage, evidence timelines and indicator correlation.
 - Network security: authorized asset inventory and passive telemetry; tightly scoped active checks with explicit target authorization and safety profiles.
