@@ -1,6 +1,6 @@
 # GODMAN Security and Diagnostics Roadmap
 
-This roadmap is prioritized around usable, measurable defensive capabilities. Features are not considered complete until tests and documentation are updated.
+This roadmap is prioritized around usable, measurable defensive capabilities across Windows, Linux, macOS, servers, and authorized cloud/network environments. See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md). Features are not considered complete until tests and documentation are updated.
 
 ## P0 — Stability and safety foundation
 - [ ] Verify audit-branch changes with full test suite and Windows CI.
@@ -24,7 +24,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities. Fe
 - [ ] Baseline snapshots and diffs.
 
 ## P2 — Vulnerability management
-- [ ] Build software inventory from supported Windows registry sources and package managers.
+- [ ] Build software inventory from Windows registry/package managers, Linux package managers, and macOS inventory sources.
 - [ ] Identify product/version/platform with confidence and evidence.
 - [ ] Match against NVD CVE feeds and CISA KEV; include vendor advisories.
 - [ ] Include source, publication/update timestamps, CVSS version/vector, KEV status, affected-range evidence and uncertainty.
