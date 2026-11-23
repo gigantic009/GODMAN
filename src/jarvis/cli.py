@@ -23,7 +23,8 @@ Commands:
   /cyber                Show GODMAN cybersecurity specialization areas
   /checkup              Run consolidated read-only Windows endpoint checkup\n  /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
-  /events               Collect selected local Windows security events (read-only)\n  /persistence          Inspect startup keys, scheduled tasks and services (read-only)
+  /events               Collect selected local Windows security events (read-only)
+  /persistence          Inspect startup keys, scheduled tasks and services (read-only)
   /url URL              Perform offline structural phishing URL triage
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
