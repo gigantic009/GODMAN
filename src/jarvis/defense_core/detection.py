@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 import json
 from typing import Any
-from .events import Event, EventBus, _validate_payload
+from .events import Event, EventBus, _validate_payload, _freeze_payload
 from .findings import Finding, Evidence
 
 
@@ -29,7 +29,7 @@ class DetectionRule:
         encoded_conditions = json.dumps(self.field_equals, ensure_ascii=False, separators=(",", ":"))
         if len(encoded_conditions.encode("utf-8")) > 8192:
             raise ValueError("rule conditions exceed 8 KB")
-        object.__setattr__(self, "field_equals", json.loads(encoded_conditions))
+        object.__setattr__(self, "field_equals", _freeze_payload(json.loads(encoded_conditions)))
         if self.severity not in {"info", "low", "medium", "high", "critical"}:
             raise ValueError("invalid severity")
         if isinstance(self.confidence, bool) or not isinstance(self.confidence, (int, float)) or not 0 <= self.confidence <= 1:
