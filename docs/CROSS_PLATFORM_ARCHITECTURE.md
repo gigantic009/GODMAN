@@ -71,6 +71,9 @@ GODMAN may offer opt-in exposure monitoring for accounts and personal data, usin
 - **Respond:** request approval for higher-impact actions, including process termination, isolation, credential revocation, system changes or recovery operations unless the owner configured a narrowly bounded emergency policy.
 - **Emergency:** preconfigured containment policy, with expiry, kill switch, logging, safeguards against lockout and post-action report. Never perform hack-back or offensive actions against third-party systems.
 
+## Controlled malware sample vault and lab
+A future optional research module may maintain a controlled sample repository for authorized analysis and reproducible detection testing, separated from GODMAN's production agent and response engine. Samples are inert at rest, access-controlled, integrity-checked, never automatically executed, and handled only within a disposable sandbox with no host credentials, restricted networking, resource ceilings, snapshots and teardown. The production defense engine consumes safe metadata, hashes, reports, sanitized behavioral indicators and reviewed rules—not runnable payloads. This lab is not a mechanism for retaliatory deployment, propagation, exploitation or damage to external systems.
+
 ## Threat knowledge and defensive intelligence core
 GODMAN should maintain a curated, updateable threat knowledge layer that maps adversary techniques and malware behaviors to detection logic, telemetry requirements, mitigations, confidence and verification. This layer is for defensive recognition and resilience—not an executable offensive arsenal.
 - **Technique knowledge:** structured mappings to frameworks such as MITRE ATT&CK, platform-specific telemetry, behavior descriptions, mitigations and detection coverage.
