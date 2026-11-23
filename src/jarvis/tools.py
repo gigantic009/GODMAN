@@ -11,7 +11,6 @@ from typing import Any, Callable
 
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
 from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
-from .markets import market_snapshot, detect_price_events
 from .security_posture import collect_windows_security_posture
 from .archive_safety import inspect_zip_safety
 from .security_scanning import scan_with_microsoft_defender
