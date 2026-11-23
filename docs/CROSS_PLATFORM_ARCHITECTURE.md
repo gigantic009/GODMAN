@@ -84,3 +84,18 @@ GODMAN should maintain a curated, updateable threat knowledge layer that maps ad
 - **Countermeasure graph:** map observed technique → evidence/telemetry → detection → containment options → root-cause mitigation → recovery → verification tests.
 - **Adaptation:** feedback can tune local rules and baselines, but changes must be explainable, versioned, reviewable, privacy-preserving, testable and reversible. No autonomous global rule publishing.
 - **Response:** threat knowledge informs defensive action on owned or authorized systems only; never enables hack-back, retaliatory exploitation or destructive actions against third-party infrastructure.
+
+
+## Adaptive firewall and defense policy engine
+An adaptive firewall is a core planned capability, not yet implemented. GODMAN should orchestrate platform-native firewall controls through reviewed adapters (Windows Firewall, Linux nftables/ufw where present, and macOS PF where supported), rather than replacing them with an opaque custom packet-filter driver.
+
+- **Observe and correlate:** ingest firewall events, authorized host telemetry and trusted threat-intelligence indicators; correlate context and behavior instead of treating a single IP or heuristic as conclusive.
+- **Rule proposals:** produce narrowly scoped, explainable rules with evidence, confidence, target platform, expiry/TTL, impact, and rollback instructions. Prefer blocking a specific verified malicious endpoint or restricting a suspicious local process/service over broad network blocks.
+- **Safe adaptation:** learn from verified incidents and simulated/regression cases. A novel event may trigger a proposed rule or an automatically applied low-impact rule only under the user's explicitly configured guard profile. Unverified signals must not silently become permanent rules.
+- **Staging and validation:** validate syntax and semantics, simulate against available event/traffic fixtures, check rule conflicts and lockout risk, stage where supported, then apply atomically or in a bounded sequence. Preserve a known-good policy and roll back if connectivity or health checks fail.
+- **Trust and updates:** rule packs are signed, versioned, provenance-tracked, freshness-checked and compatible with the platform adapter. Updates are atomic, rate-limited, testable, reversible and never sourced directly from arbitrary attacker-controlled content.
+- **Safeguards:** retain recovery access and essential local/network services; protect DNS, DHCP, loopback and user-configured management paths from accidental blocking; enforce per-action limits, expiry, audit logs and a kill switch. High-impact policy changes require approval unless a narrow emergency policy has been explicitly configured.
+- **Verification:** report what was changed, why, evidence, affected traffic/scope, test results, remaining uncertainty and rollback status. Re-check policy state after updates and OS changes.
+- **Cross-platform:** use a common policy model and platform adapters; clearly report unsupported features and never pretend a rule was enforced when the platform or permissions do not support it.
+
+The adaptive firewall is for defensive control of the owner-authorized host/network. It does not scan, exploit or attack the presumed source of an attack.
