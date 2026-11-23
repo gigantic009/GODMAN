@@ -48,7 +48,7 @@ class LocalKnowledgeStore:
         with self._connect() as db:
             db.execute("INSERT OR IGNORE INTO events VALUES (?, ?, ?, ?, ?)",
                        (event.event_id, event.timestamp, event.event_type, event.source, payload))
-            db.execute("DELETE FROM events WHERE event_id IN (SELECT event_id FROM events ORDER BY observed_at DESC LIMIT -1 OFFSET ?)", (self.retention,))
+            db.execute("DELETE FROM events WHERE event_id IN (SELECT event_id FROM events ORDER BY observed_at DESC, event_id DESC LIMIT -1 OFFSET ?)", (self.retention,))
 
     def save_finding(self, finding):
         from .findings import Finding
@@ -63,19 +63,19 @@ class LocalKnowledgeStore:
             db.execute("INSERT OR IGNORE INTO findings VALUES (?, ?, ?, ?, ?, ?)",
                        (finding.finding_id, finding.created_at, finding.rule_id,
                         finding.severity, finding.confidence, payload))
-            db.execute("DELETE FROM findings WHERE finding_id IN (SELECT finding_id FROM findings ORDER BY created_at DESC LIMIT -1 OFFSET ?)", (self.retention,))
+            db.execute("DELETE FROM findings WHERE finding_id IN (SELECT finding_id FROM findings ORDER BY created_at DESC, finding_id DESC LIMIT -1 OFFSET ?)", (self.retention,))
 
     def recent_events(self, limit: int = 100) -> list[dict[str, Any]]:
         limit = self._limit(limit)
         with self._connect() as db:
-            rows = db.execute("SELECT event_id,observed_at,event_type,source,payload FROM events ORDER BY observed_at DESC LIMIT ?", (limit,)).fetchall()
+            rows = db.execute("SELECT event_id,observed_at,event_type,source,payload FROM events ORDER BY observed_at DESC, event_id DESC LIMIT ?", (limit,)).fetchall()
         return [{"event_id": row[0], "timestamp": row[1], "event_type": row[2],
                  "source": row[3], "data": json.loads(row[4])} for row in rows]
 
     def recent_findings(self, limit: int = 100) -> list[dict[str, Any]]:
         limit = self._limit(limit)
         with self._connect() as db:
-            rows = db.execute("SELECT finding_id,created_at,rule_id,severity,confidence,payload FROM findings ORDER BY created_at DESC LIMIT ?", (limit,)).fetchall()
+            rows = db.execute("SELECT finding_id,created_at,rule_id,severity,confidence,payload FROM findings ORDER BY created_at DESC, finding_id DESC LIMIT ?", (limit,)).fetchall()
         return [{"finding_id": row[0], "created_at": row[1], "rule_id": row[2],
                  "severity": row[3], "confidence": row[4], **json.loads(row[5])} for row in rows]
 
