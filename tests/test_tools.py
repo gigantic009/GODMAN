@@ -84,6 +84,15 @@ class ToolTests(unittest.TestCase):
             registry.execute("read")
         self.assertEqual(called, [])
 
+    def test_read_action_cannot_be_promoted_to_approval_scope(self):
+        approved = []
+        central = ActionPolicy(allowed_read_actions=set(), approval_actions={"tool:read"})
+        registry = ToolRegistry(SecurityPolicy(lambda *_: approved.append(True) or True), self.audit, central)
+        registry.register(Tool("read", "test", "read", lambda: "should not run"))
+        with self.assertRaises(PermissionError):
+            registry.execute("read")
+        self.assertEqual(approved, [])
+
     def test_custom_policy_denies_write_even_when_approval_callback_accepts(self):
         central = ActionPolicy(allowed_read_actions=set(), approval_actions=set())
         registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit, central)
