@@ -9,7 +9,7 @@ from jarvis.tools import build_default_registry
 
 
 class SecurityToolRegistrationTests(unittest.TestCase):
-    def test_security_and_market_tools_are_explicitly_registered(self):
+    def test_defensive_security_tools_are_explicitly_registered(self):
         with tempfile.TemporaryDirectory() as temp:
             registry = build_default_registry(Path(temp) / "data", Path(temp) / "workspace", SecurityPolicy())
             names = {item["name"] for item in registry.describe()}
@@ -19,7 +19,10 @@ class SecurityToolRegistrationTests(unittest.TestCase):
                 "sha256_workspace_file",
                 "collect_windows_security_posture",
                 "inspect_zip_safety",
-                "analyze_market_prices",
+                "inspect_windows_firewall",
+                "collect_windows_security_events",
+                "analyze_url_structure",
+                "scan_workspace_with_defender",
             }.issubset(names))
             self.assertNotIn("run_shell_command", names)
             self.assertNotIn("execute_powershell", names)
