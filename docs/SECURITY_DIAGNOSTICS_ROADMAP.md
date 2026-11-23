@@ -94,3 +94,13 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ## Acceptance
 No feature is advertised as implemented before it is verified. Scanning and remediation must be owner-authorized, bounded and transparent.
+
+## P4 — Adaptive firewall (planned)
+- [ ] Define a normalized firewall policy/rule model, evidence references, expiry, severity, confidence, scope and rollback.
+- [ ] Implement read-only firewall posture and policy/event collectors behind platform adapters (Windows first; Linux nftables/ufw and macOS PF capability detection next).
+- [ ] Build a rule proposal engine: explainable evidence, narrowly scoped blocks/restrictions, conflict and lockout checks, TTL and audit.
+- [ ] Simulate rule decisions against synthetic traffic/event fixtures; add regression cases for false positives and essential connectivity.
+- [ ] Implement signed, versioned, compatibility-checked rule packs with atomic updates, freshness checks and rollback.
+- [ ] Add staged/guarded enforcement with explicit policy, action budget, kill switch, recovery path and independent verification.
+- [ ] Connect verified incident feedback to rule tuning; never auto-promote untrusted telemetry or feed arbitrary content directly into enforcement.
+- [ ] Test platform adapters, permission failures, rollback, update failure, lockout protection and graceful unsupported-platform behavior.
