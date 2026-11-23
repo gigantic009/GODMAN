@@ -3,6 +3,8 @@
 Use this page to find project documentation by topic.
 
 ## Architecture and planning
+- [Product scope](PRODUCT_SCOPE.md) — mission, limits, and engineering standards.
+- [Diagnostics and security roadmap](SECURITY_DIAGNOSTICS_ROADMAP.md) — prioritized feature plan.
 - [Architecture](ARCHITECTURE.md) — core lifecycle and trust boundaries.
 - [Roadmap](ROADMAP.md) — milestones and verification gates.
 - [Requested feature coverage](REQUESTED_FEATURE_COVERAGE.md) — capability status.
