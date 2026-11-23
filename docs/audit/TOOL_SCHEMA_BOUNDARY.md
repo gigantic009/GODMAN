@@ -8,7 +8,7 @@ GODMAN validates tool argument schemas at registration, snapshots the schema so 
 
 Supported schema types are object, array, string, integer, number and boolean. The subset supports nested properties/items, enum, string length bounds, array item/count bounds and numeric bounds. Unsupported keywords are rejected at registration rather than silently ignored.
 
-Runtime validation enforces declared types (including rejecting booleans where integers/numbers are expected), finite and bounded numeric values, payload/object/array/string limits, enum type equality and nested constraints. This is not a general JSON Schema implementation.
+Runtime validation enforces declared types (including rejecting booleans where integers/numbers are expected), finite and bounded numeric/integer magnitudes, payload/object/array/string limits, enum type equality and nested constraints. The EventBus and detection engine serialize concurrent publication and processing to keep stateful subscribers and retained findings bounded. This is not a general JSON Schema implementation.
 
 ## Design rationale
 
@@ -19,7 +19,7 @@ Runtime validation enforces declared types (including rejecting booleans where i
 
 ## Tests
 
-The offline tests cover unsupported keywords, strict object closure, property/required mismatch, schema bounds, invalid enum typing, overflow, schema snapshot mutation, and nested arrays/item types.
+The offline tests cover unsupported keywords, strict object closure, property/required mismatch, schema bounds, invalid enum typing, numeric and integer overflow, schema snapshot mutation, nested arrays/item types, and concurrent event publication/detection retention.
 
 ## Reference concepts
 
