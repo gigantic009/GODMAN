@@ -1,7 +1,7 @@
 """Deterministic, testable event-to-finding detection rules."""
 from dataclasses import dataclass
 from typing import Any
-from .events import Event
+from .events import Event, EventBus
 from .findings import Finding, Evidence
 
 
@@ -30,6 +30,7 @@ class DetectionEngine:
     def __init__(self, rules=(), store=None):
         self.rules = []
         self.findings = []
+        self.store = store
         for rule in rules:
             self.add_rule(rule)
 
@@ -55,6 +56,9 @@ class DetectionEngine:
                                        severity=rule.severity, confidence=rule.confidence,
                                        evidence=(evidence,), description=rule.description))
         self.findings.extend(findings)
+        if self.store is not None:
+            for finding in findings:
+                self.store.save_finding(finding)
         return findings
 
     def attach(self, bus):
@@ -64,7 +68,6 @@ class DetectionEngine:
         return self
 
     def _on_event(self, event):
+        if self.store is not None:
+            self.store.save_event(event)
         self.process(event)
-
-
-from .events import EventBus
