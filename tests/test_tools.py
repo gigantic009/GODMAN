@@ -48,6 +48,14 @@ class ToolTests(unittest.TestCase):
                 registry.execute("bounded", args)
         self.assertEqual(registry.execute("bounded", {"items": [1, 2], "count": 2}), "ok")
 
+    def test_audit_redacts_secrets_and_email(self):
+        self.audit.record("test", "read", "success", "api_key=abc123 user@example.com")
+        details = self.audit.recent()[0]["details"]
+        self.assertNotIn("abc123", details)
+        self.assertNotIn("user@example.com", details)
+        self.assertIn("[REDACTED]", details)
+        self.assertIn("[EMAIL]", details)
+
     def test_read_tool_does_not_need_approval(self):
         registry = ToolRegistry(SecurityPolicy(lambda *_: False), self.audit)
         registry.register(Tool("read", "test", "read", lambda: "ok"))
