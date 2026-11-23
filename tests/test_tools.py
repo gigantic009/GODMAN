@@ -49,6 +49,14 @@ class ToolTests(unittest.TestCase):
                 registry.execute("bounded", args)
         self.assertEqual(registry.execute("bounded", {"items": [1, 2], "count": 2}), "ok")
 
+    def test_integer_schema_rejects_overflowing_integer_values(self):
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        schema = {"type": "object", "properties": {"value": {"type": "integer"}},
+                  "required": ["value"], "additionalProperties": False}
+        registry.register(Tool("integer_overflow", "test", "read", lambda value: value, schema))
+        with self.assertRaises(ValueError):
+            registry.execute("integer_overflow", {"value": 10**1000})
+
     def test_schema_definitions_are_rejected_at_registration(self):
         invalid = [
             {"type": "object", "properties": {"value": {"type": "string", "pattern": "x"}},
