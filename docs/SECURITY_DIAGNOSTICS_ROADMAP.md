@@ -51,22 +51,30 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Add evidence timeline and case notes with immutable evidence hashes.
 - [ ] Add artifact provenance and chain-of-custody export.
 
-## P4 — Network and cloud security
+## P4 — User exposure and account protection
+- [ ] Opt-in account/email exposure monitoring through reputable provider APIs and authorized sources.
+- [ ] Privacy-preserving breached-password checks (hash-prefix/k-anonymity protocol where supported); never ingest or store plaintext credentials.
+- [ ] Provide breach-context alerts, affected data categories and actionable account recovery steps (password change, MFA/passkeys, session revocation, recovery review).
+- [ ] Add user-owned domain exposure and impersonation checks with scope/consent and conservative evidence handling.
+- [ ] Minimize notification disclosure and redact exposure data from logs.
+
+## P5 — Network and cloud security
 - [ ] Authorized local asset inventory with explicit CIDR allow-list and confirmation.
 - [ ] Passive telemetry ingestion (e.g., Zeek/Suricata formats) and anomaly summaries.
 - [ ] Protocol metadata inspection and bounded packet-file analysis.
 - [ ] Cloud posture adapters only after explicit connector scope and credential protections.
 - [ ] No exploit payloads, stealth, persistence or unauthorized scanning.
 
-## P5 — Safe remediation and operations
+## P6 — Safe remediation and operations
 - [ ] Remediation proposals with risk, evidence, prerequisites and rollback.
 - [ ] Dry-run and diff before changes.
 - [ ] Step-up confirmation for privileged operations.
 - [ ] Recovery checkpoints and failure rollback.
 - [ ] Kill switch, audit provenance and independent verification.
 - [ ] Optional scheduled monitoring, opt-in scope, rate limits and notifications.
+- [ ] Define autonomous modes (observe, guard, approval-based response, narrowly configured emergency response) with action budgets, expiry, lockout safeguards and kill switch.
 
-## P6 — UX, community and releases
+## P7 — UX, community and releases
 - [ ] Interactive terminal UX and guided first-run checkup.
 - [ ] Dashboard for health, findings, priorities, evidence and status.
 - [ ] Exportable reports that do not leak secrets.
