@@ -3,7 +3,7 @@
 This roadmap is prioritized around usable, measurable defensive capabilities across Windows, Linux, macOS, servers, and authorized cloud/network environments. See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md). Features are not considered complete until tests and documentation are updated.
 
 ## P0 — Stability and safety foundation
-- [x] Implement Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (77-test cross-version CI verified).
+- [x] Implement Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (80-test cross-version CI verified).
 - [x] Integrate a central action-policy decision into the tool dispatcher; the existing explicit approval callback remains a second gate for non-read actions (CI verified).
 - [x] Snapshot and freeze normalized event payloads and detection-rule conditions to prevent ordinary post-publication mutation (CI verified).
 - [x] Verify the core implementation with the full offline test suite and Python 3.10/3.11/3.12 CI matrix (native Windows CI remains separate).
@@ -19,9 +19,9 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 Defensive Core acceptance and verification — 23 November 2026
 
-- GitHub Actions run [45169875803](https://github.com/gigantic009/GODMAN/actions/runs/45169875803) passed for current branch commit `3153b273a428b85147255935c59a863073b1a9fe`: compilation and **77 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
-- The passing matrix includes strict tool-schema validation, schema snapshot mutation, enum and numeric/integer overflow regressions, nested arrays, serialized EventBus/detection processing and concurrency retention.
-- CI previously exposed a missing default `required` key in tool schemas; the normalization fix was included and verified in the passing run.
+- GitHub Actions run [45223267770](https://github.com/gigantic009/GODMAN/actions/runs/45223267770) passed for commit `b37476fdad6525de73dc4c8de99335b9153e34cb`: compilation and **80 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
+- All three matrix jobs completed their compile and unit-test steps successfully. Coverage includes central policy boundary tests, strict schema validation, payload limits and dispatch snapshot isolation, normalized events, evidence-linked detections, adapters and local persistence.
+- A preceding run exposed a missing `json` import in dispatch snapshot serialization; it was corrected and the 80-test matrix passed on the resulting commit.
 - Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding.
 
 ### Defensive Core foundation acceptance
@@ -34,7 +34,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [x] Capability-oriented adapter abstraction and normalized event conversion
 - [x] Bounded local SQLite event/finding knowledge store
 - [x] Strict registration-time tool-schema validation and regression coverage
-- [x] Cross-version CI compilation and 77 offline unit tests
+- [x] Cross-version CI compilation and 80 offline unit tests
 
 > Live/native collector integration, Windows-specific test coverage and wider platform/operational readiness are follow-on work; this acceptance applies to the Defensive Core foundation, not to GODMAN as a complete endpoint security product.
 
