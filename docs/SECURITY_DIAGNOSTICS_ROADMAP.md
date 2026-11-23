@@ -19,10 +19,11 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 verification evidence — 23 November 2026
 
-- GitHub Actions run [45153413913](https://github.com/gigantic009/GODMAN/actions/runs/45153413913) passed for commit `c3aca6bed568d3505baa95d203094f2019677d47`: source compilation and the offline unit-test step passed on Python 3.10, 3.11 and 3.12.
-- Subsequent commits added registration-time validation and defensive schema snapshots for tool definitions, plus regressions for unsupported schema keywords, strict required/property matching, enums, bounds and overflow. These later commits await CI confirmation.
-- Native endpoint collectors are not attached; platform-specific Windows/Linux/macOS collector integration, thread-safety, concurrency and operational testing remain outstanding.
-- Full Phase 1 acceptance is not yet met: verification for the latest commit and platform-specific integration evidence remain required.
+- GitHub Actions run [45169278072](https://github.com/gigantic009/GODMAN/actions/runs/45169278072) passed for commit `a87c3152d1a126f116fa7fa87b80d59e894e002c): source compilation and the full offline unit-test step passed on Python 3.10, 3.11 and 3.12, including schema-registration, snapshot and numeric-overflow regressions.
+- GitHub Actions run [45169349442](https://github.com/gigantic009/GODMAN/actions/runs/45169349442) passed for commit `f953d1ba731046ce3d35c706a08aaf6da011cfc0`, including nested-array schema tests. Run [45169390381](https://github.com/gigantic009/GODMAN/actions/runs/45169390381) passed for commit `7a04d08560bd50def54ed5801f927de77aeb2161`.
+- CI uncovered an omitted `required` key in default tool schemas; schema registration now normalizes the default empty `properties` and `required` fields. The regression was corrected and subsequently verified in the passing runs above.
+- Later changes add bounded integer magnitude and serialize concurrent EventBus publication/detection processing, with additional tests. Their latest CI run is still pending; do not treat them as verified yet.
+- Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding. Phase 1 acceptance is not yet met.
 
 ## P1 — Diagnostics
 - [ ] CPU, memory, storage and system uptime snapshot with historical trends.
