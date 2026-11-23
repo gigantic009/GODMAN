@@ -41,3 +41,17 @@ Passive log/telemetry analysis first. Active inventory or scanning must be limit
 5. Optional integrations and dashboards.
 
 GODMAN does not claim to replace dedicated EDR, SIEM, incident response teams, or enterprise security operations.
+
+## Adaptive defense: immune-system model
+GODMAN should evolve from point-in-time inspection toward a defensive feedback loop, inspired by biological immune systems. This is a design goal; it is not yet a claim that adaptive response is implemented.
+
+1. **Sense (antigen discovery):** collect bounded, authorized telemetry and artifacts; normalize observations into evidence-backed indicators. Avoid treating a single heuristic as proof.
+2. **Identify:** correlate indicators across process, file, persistence, event, network and vulnerability context; attach confidence, provenance and uncertainty.
+3. **Learn safely (immune memory):** retain user-approved, privacy-minimized fingerprints, rule outcomes and false-positive feedback. Prefer deterministic, explainable rule updates and signed rule packs. Do not silently train on sensitive user data or turn unverified observations into global threat claims.
+4. **Contain locally:** response profiles may block a local connection/indicator, quarantine a file (with restore path), stop a confirmed malicious process, disable a suspicious local persistence entry, isolate an owned endpoint through an authorized platform control, or revoke/rotate a compromised local credential through an explicitly authorized integration. Actions must be scoped, reversible where possible, rate-limited and audited.
+5. **Root-cause resolution:** investigate the chain and contributing conditions—not just the alert. Identify entry point, persistence, execution, affected assets, lateral movement evidence, exploited weakness and configuration gap; build a remediation plan; remove/repair identified local artifacts; patch or harden; restore from trusted sources; and verify with a follow-up scan. Report unresolved uncertainties and require approval for high-impact changes.
+6. **Recover and verify:** preserve evidence, checkpoint where practical, apply approved actions, verify the result independently and provide rollback/recovery steps.
+7. **Adapt:** update local detection baselines and response recommendations based on verified outcomes and explicit feedback, with rule provenance, versioning, expiry and rollback.
+
+### Response boundaries
+GODMAN may defend assets the user owns or is explicitly authorized to administer. Its meaning of **retaliation is defensive response**, not hack-back: it must not attack, exploit, DDoS, infiltrate, surveil or damage an attacker's device, infrastructure or account, nor pursue targets based on attribution guesses. Remote threat infrastructure may be reported to providers or authorities through user-approved workflows. Active network actions require explicit target scope and rate limits. High-impact containment and remediation require approval unless a user has separately configured a narrow, documented emergency policy.
