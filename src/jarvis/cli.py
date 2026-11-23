@@ -23,7 +23,7 @@ Commands:
   /cyber                Show GODMAN cybersecurity specialization areas
   /checkup              Run consolidated read-only Windows endpoint checkup\n  /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
-  /events               Collect selected local Windows security events (read-only)
+  /events               Collect selected local Windows security events (read-only)\n  /persistence          Inspect startup keys, scheduled tasks and services (read-only)
   /url URL              Perform offline structural phishing URL triage
   /tools                List local tools and their risk level
   /audit                Show recent local tool audit events
@@ -141,7 +141,7 @@ def main() -> None:
             except Exception as exc:
                 print(f"Endpoint checkup unavailable: {type(exc).__name__}: {exc}")
             continue
-        if raw == "/events":
+        if raw == "/persistence":\n            try:\n                print(json.dumps(registry.execute("inspect_windows_persistence"), indent=2, ensure_ascii=False))\n            except Exception as exc:\n                print(f"Persistence inventory unavailable: {type(exc).__name__}: {exc}")\n            continue\n        if raw == "/events":
             try:
                 print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
             except Exception as exc:
