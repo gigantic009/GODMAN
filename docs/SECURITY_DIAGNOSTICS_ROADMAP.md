@@ -2,7 +2,8 @@
 
 This roadmap is prioritized around usable, measurable defensive capabilities across Windows, Linux, macOS, servers, and authorized cloud/network environments. See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md). Features are not considered complete until tests and documentation are updated.
 
-## P0 — Stability and safety foundation\n- [x] Implement initial Defensive Core foundation: normalized Event/EventBus, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment (unit tests added; CI verification pending).
+## P0 — Stability and safety foundation
+- [x] Implement initial Defensive Core foundation: normalized Event/EventBus, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment (unit tests added; CI verification pending).
 - [ ] Verify audit-branch changes with full test suite and Windows CI.
 - [ ] Add Windows test matrix for supported Python versions.
 - [ ] Establish Ruff linting, type-checking baseline and coverage reporting.
@@ -56,7 +57,8 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Improve URL triage: IDNA/homograph signals, parsing edge cases, offline-only mode.
 - [ ] Add optional reputable reputation sources with privacy disclosure and consent.
 - [ ] Add static scanning adapters (ClamAV/YARA-compatible) with isolation and resource limits.
-- [ ] Add Sigma rule validation and fixture-driven event correlation.\n- [x] Add bounded, read-only Windows persistence inventory (Run keys, scheduled tasks, services) with heuristic triage and explicit limitations.
+- [ ] Add Sigma rule validation and fixture-driven event correlation.
+- [x] Add bounded, read-only Windows persistence inventory (Run keys, scheduled tasks, services) with heuristic triage and explicit limitations.
 - [ ] Add evidence timeline and case notes with immutable evidence hashes.
 - [ ] Add artifact provenance and chain-of-custody export.
 
