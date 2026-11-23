@@ -19,7 +19,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 verification evidence — 23 November 2026
 
-- A local isolated scratch harness ran 12 targeted tests covering normalized events, payload/rule immutability, EventBus retention/subscriber isolation, detection, evidence, adapter capability gating/normalization, SQLite round-trip, and central tool-dispatch policy/approval boundaries; all 12 passed.
+- A local isolated scratch harness ran 13 targeted tests covering normalized events and UTC timestamp normalization, payload/rule immutability, EventBus retention/subscriber isolation, detection, evidence, adapter capability gating/normalization, SQLite round-trip, and central tool-dispatch policy/approval boundaries; all 12 passed.
 - This was a copied-subset harness, not the repository's full test suite or a native-platform test.
 - GitHub Actions has no status/run available for the latest PR merge ref in this verification attempt. An earlier run failed compilation on a malformed literal newline in the core exports; that defect has been corrected on the audit branch.
 - Native endpoint collectors are still not attached, and Windows/Linux/macOS integration tests remain outstanding. Phase 1 code integration is progressing, but acceptance is not yet verified.
