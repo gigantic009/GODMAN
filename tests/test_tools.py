@@ -56,6 +56,12 @@ class ToolTests(unittest.TestCase):
         self.assertIn("[REDACTED]", details)
         self.assertIn("[EMAIL]", details)
 
+    def test_registry_has_no_market_tools(self):
+        from jarvis.tools import build_default_registry
+        registry = build_default_registry(self.root / "data", self.root / "workspace", SecurityPolicy())
+        names = [item["name"] for item in registry.describe()]
+        self.assertFalse(any("market" in name.lower() or "stock" in name.lower() for name in names))
+
     def test_read_tool_does_not_need_approval(self):
         registry = ToolRegistry(SecurityPolicy(lambda *_: False), self.audit)
         registry.register(Tool("read", "test", "read", lambda: "ok"))
