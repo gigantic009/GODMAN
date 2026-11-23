@@ -179,7 +179,17 @@ def create_workspace_file(workspace: str, relative_path: str, content: str) -> s
     if len(content) > 200_000:
         raise ValueError("Content exceeds the 200 KB write limit.")
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(content, encoding="utf-8")
+    # Re-resolve after parent creation, then create atomically without overwriting.
+    target = (root / relative_path).resolve()
+    if target != root and root not in target.parents:
+        raise ValueError("Path escapes the configured workspace.")
+    if target.exists():
+        raise FileExistsError("Refusing to overwrite an existing file.")
+    try:
+        with target.open("x", encoding="utf-8", newline="") as handle:
+            handle.write(content)
+    except FileExistsError:
+        raise FileExistsError("Refusing to overwrite an existing file.") from None
     return str(target)
 
 
