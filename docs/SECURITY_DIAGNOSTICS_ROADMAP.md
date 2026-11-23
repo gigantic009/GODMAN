@@ -39,7 +39,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities. Fe
 - [ ] Improve URL triage: IDNA/homograph signals, parsing edge cases, offline-only mode.
 - [ ] Add optional reputable reputation sources with privacy disclosure and consent.
 - [ ] Add static scanning adapters (ClamAV/YARA-compatible) with isolation and resource limits.
-- [ ] Add Sigma rule validation and fixture-driven event correlation.
+- [ ] Add Sigma rule validation and fixture-driven event correlation.\n- [x] Add bounded, read-only Windows persistence inventory (Run keys, scheduled tasks, services) with heuristic triage and explicit limitations.
 - [ ] Add evidence timeline and case notes with immutable evidence hashes.
 - [ ] Add artifact provenance and chain-of-custody export.
 
