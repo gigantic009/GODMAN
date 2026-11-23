@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from typing import Any, Callable
 import json
 import uuid
+from threading import RLock
 
 
 def _validate_payload(value: Any, depth: int = 0) -> None:
@@ -113,7 +114,7 @@ class Event:
 
 
 class EventBus:
-    """Synchronous fan-out with bounded history; subscriber errors are isolated."""
+    """Synchronous, serialized fan-out with bounded history and subscriber isolation."""
 
     def __init__(self, history_limit: int = 1000):
         if isinstance(history_limit, bool) or not isinstance(history_limit, int) or not 1 <= history_limit <= 100000:
@@ -122,26 +123,35 @@ class EventBus:
         self._history = []
         self._subscribers = []
         self.subscriber_errors = []
+        self._lock = RLock()
+        self._publish_lock = RLock()
 
     def subscribe(self, callback: Callable[[Event], None]):
         if not callable(callback):
             raise TypeError("subscriber must be callable")
-        if callback not in self._subscribers:
-            self._subscribers.append(callback)
+        with self._lock:
+            if callback not in self._subscribers:
+                self._subscribers.append(callback)
 
     def publish(self, event: Event) -> Event:
         if not isinstance(event, Event):
             raise TypeError("only normalized Event instances may be published")
-        self._history.append(event)
-        if len(self._history) > self.history_limit:
-            self._history = self._history[-self.history_limit:]
-        for callback in tuple(self._subscribers):
-            try:
-                callback(event)
-            except Exception as exc:
-                self.subscriber_errors.append(type(exc).__name__)
-                if len(self.subscriber_errors) > 100:
-                    self.subscriber_errors = self.subscriber_errors[-100:]
+        # Serialize publication and callbacks to keep bus-driven stateful consumers
+        # deterministic without holding the history/subscriber lock during callbacks.
+        with self._publish_lock:
+            with self._lock:
+                self._history.append(event)
+                if len(self._history) > self.history_limit:
+                    self._history = self._history[-self.history_limit:]
+                subscribers = tuple(self._subscribers)
+            for callback in subscribers:
+                try:
+                    callback(event)
+                except Exception as exc:
+                    with self._lock:
+                        self.subscriber_errors.append(type(exc).__name__)
+                        if len(self.subscriber_errors) > 100:
+                            self.subscriber_errors = self.subscriber_errors[-100:]
         return event
 
     def history(self, limit: int = 100) -> list[Event]:
@@ -151,4 +161,5 @@ class EventBus:
             raise ValueError("limit cannot be negative")
         if limit == 0:
             return []
-        return list(self._history[-min(limit, self.history_limit):])
+        with self._lock:
+            return list(self._history[-min(limit, self.history_limit):])
