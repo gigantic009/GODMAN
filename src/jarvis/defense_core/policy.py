@@ -42,7 +42,7 @@ class ActionPolicy:
     def evaluate(self, action: str, *, approval_granted=False, emergency_mode=False) -> ActionDecision:
         if not isinstance(approval_granted, bool) or not isinstance(emergency_mode, bool):
             return ActionDecision(False, False, "Approval and emergency flags must be booleans", str(action))
-        if not isinstance(action, str) or not action or len(action) > 128:
+        if not isinstance(action, str) or not action or len(action) > 256:
             return ActionDecision(False, False, "Invalid action identifier", str(action))
         if action in self.allowed_read_actions:
             return ActionDecision(True, False, "Explicitly allow-listed read-only action", action)
