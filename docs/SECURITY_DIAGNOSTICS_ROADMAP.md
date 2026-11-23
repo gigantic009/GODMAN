@@ -19,10 +19,10 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 verification evidence — 23 November 2026
 
-- GitHub Actions run [45169278072](https://github.com/gigantic009/GODMAN/actions/runs/45169278072) passed for commit `a87c3152d1a126f116fa7fa87b80d59e894e002c): source compilation and the full offline unit-test step passed on Python 3.10, 3.11 and 3.12, including schema-registration, snapshot and numeric-overflow regressions.
-- GitHub Actions run [45169349442](https://github.com/gigantic009/GODMAN/actions/runs/45169349442) passed for commit `f953d1ba731046ce3d35c706a08aaf6da011cfc0`, including nested-array schema tests. Run [45169390381](https://github.com/gigantic009/GODMAN/actions/runs/45169390381) passed for commit `7a04d08560bd50def54ed5801f927de77aeb2161`.
-- CI uncovered an omitted `required` key in default tool schemas; schema registration now normalizes the default empty `properties` and `required` fields. The regression was corrected and subsequently verified in the passing runs above.
-- Later changes add bounded integer magnitude and serialize concurrent EventBus publication/detection processing, with additional tests. Their latest CI run is still pending; do not treat them as verified yet.
+- GitHub Actions run [45169573957](https://github.com/gigantic009/GODMAN/actions/runs/45169573957) passed for code commit `7336c6a5eb5cbd34aa721add1ad9c93a7624cd66`: source compilation and **77 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
+- The passing matrix includes the strict tool-schema boundary, schema snapshot mutation, enum and numeric/integer overflow regressions, nested arrays, serialized EventBus/detection processing and concurrency retention test.
+- CI previously exposed a missing default `required` key in tool schemas; the schema normalization fix was included and verified in the successful runs.
+- Subsequent commits after the verified code SHA are documentation-only updates. CI for the newest documentation commit is pending.
 - Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding. Phase 1 acceptance is not yet met.
 
 ## P1 — Diagnostics
