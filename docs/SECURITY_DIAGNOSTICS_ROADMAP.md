@@ -19,10 +19,10 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 verification evidence — 23 November 2026
 
-- A local isolated scratch harness ran 13 targeted tests covering normalized events and UTC timestamp normalization, payload/rule immutability, EventBus retention/subscriber isolation, detection, evidence, adapter capability gating/normalization, SQLite round-trip, and central tool-dispatch policy/approval boundaries; all 12 passed.
-- This was a copied-subset harness, not the repository's full test suite or a native-platform test.
-- GitHub Actions has no status/run available for the latest PR merge ref in this verification attempt. An earlier run failed compilation on a malformed literal newline in the core exports; that defect has been corrected on the audit branch.
-- Native endpoint collectors are still not attached, and Windows/Linux/macOS integration tests remain outstanding. Phase 1 code integration is progressing, but acceptance is not yet verified.
+- GitHub Actions run [45153413913](https://github.com/gigantic009/GODMAN/actions/runs/45153413913) passed for commit `c3aca6bed568d3505baa95d203094f2019677d47`: source compilation and the offline unit-test step passed on Python 3.10, 3.11 and 3.12.
+- Subsequent commits added registration-time validation and defensive schema snapshots for tool definitions, plus regressions for unsupported schema keywords, strict required/property matching, enums, bounds and overflow. These later commits await CI confirmation.
+- Native endpoint collectors are not attached; platform-specific Windows/Linux/macOS collector integration, thread-safety, concurrency and operational testing remain outstanding.
+- Full Phase 1 acceptance is not yet met: verification for the latest commit and platform-specific integration evidence remain required.
 
 ## P1 — Diagnostics
 - [ ] CPU, memory, storage and system uptime snapshot with historical trends.
