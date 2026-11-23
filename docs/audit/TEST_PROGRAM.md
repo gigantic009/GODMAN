@@ -60,10 +60,6 @@ This program targets owner-controlled assets and GODMAN itself. Adversarial test
 - URL parsing: IPv6, IDNA, credentials, ports, malformed/control characters.
 - File type, entropy and hash correctness.
 
-### Market analytics
-- Reference-value tests for SMA/EMA/RSI/MACD/Bollinger.
-- Minimum-length boundaries, NaN/infinities, nonnumeric and boolean values.
-- Zero/negative prices and event threshold boundaries.
 
 ### Performance/reliability
 - Startup, peak memory, sustained conversation/history growth, SQLite growth.
