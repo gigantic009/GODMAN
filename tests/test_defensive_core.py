@@ -1,5 +1,6 @@
 import sys
 import unittest
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -22,6 +23,18 @@ class DefensiveCoreTests(unittest.TestCase):
             Event("x", "source", {}, schema_version=True)
         offset_event = Event("x", "source", {}, timestamp="2026-11-23T15:00:00+05:30")
         self.assertTrue(offset_event.timestamp.endswith("+00:00"))
+
+    def test_concurrent_bus_publication_and_detection_are_bounded(self):
+        bus = EventBus(history_limit=50)
+        engine = DetectionEngine([DetectionRule("R", "match", "x", {})], max_findings=50)
+        engine.attach(bus)
+        events = [Event("x", "fixture", {"index": i}) for i in range(100)]
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            list(pool.map(bus.publish, events))
+        history = bus.history()
+        self.assertEqual(len(history), 50)
+        self.assertEqual(len(engine.findings), 50)
+        self.assertEqual(len({event.event_id for event in history}), 50)
 
     def test_event_payload_is_snapshotted(self):
         payload = {"nested": {"items": [1, 2]}}
