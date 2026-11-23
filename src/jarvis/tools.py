@@ -95,19 +95,12 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
 class ToolRegistry:
     """Schema-checked tool dispatcher with a central action-policy boundary."""
 
-    _RISK_TO_ACTION = {
-        "read": "read_only_observation",
-        "write": "write_tool",
-        "system": "system_tool",
-        "external": "external_tool",
-    }
-
     def __init__(self, policy: SecurityPolicy, audit: AuditLog, action_policy: ActionPolicy | None = None):
         self.policy = policy
         self.audit = audit
+        self._default_action_policy = action_policy is None
         self.action_policy = action_policy or ActionPolicy(
-            allowed_read_actions={"read_only_observation"},
-            approval_actions={"write_tool", "system_tool", "external_tool"},
+            allowed_read_actions=set(), approval_actions=set(),
         )
         self._tools: dict[str, Tool] = {}
 
@@ -116,7 +109,7 @@ class ToolRegistry:
             raise TypeError("registered item must be a Tool")
         if not isinstance(tool.name, str) or not tool.name.strip() or len(tool.name) > 128:
             raise ValueError("tool name must be non-empty and bounded")
-        if tool.risk not in self._RISK_TO_ACTION:
+        if tool.risk not in {"read", "write", "system", "external"}:
             raise ValueError("tool risk must be read, write, system, or external")
         if not callable(tool.handler):
             raise TypeError("tool handler must be callable")
@@ -124,6 +117,21 @@ class ToolRegistry:
             raise TypeError("tool parameters must be a schema dictionary")
         if tool.name in self._tools:
             raise ValueError(f"Tool already registered: {tool.name}")
+        action = f"tool:{tool.name}"
+        # When no policy was supplied, registration is the explicit allow-list
+        # boundary: reads are allow-listed, while other actions are approval-scoped.
+        if self._default_action_policy:
+            read_actions = set(self.action_policy.allowed_read_actions)
+            approval_actions = set(self.action_policy.approval_actions)
+            if tool.risk == "read":
+                read_actions.add(action)
+            else:
+                approval_actions.add(action)
+            self.action_policy = ActionPolicy(
+                allowed_read_actions=read_actions,
+                approval_actions=approval_actions,
+                emergency_actions=self.action_policy.emergency_actions,
+            )
         self._tools[tool.name] = tool
 
     def describe(self) -> list[dict[str, str]]:
@@ -150,7 +158,7 @@ class ToolRegistry:
         tool = self._tools[name]
         try:
             _validate_schema(args, tool.parameters)
-            action = self._RISK_TO_ACTION[tool.risk]
+            action = f"tool:{tool.name}"
             decision = self.action_policy.evaluate(action)
             if not decision.allowed and not decision.requires_approval:
                 raise PermissionError(decision.reason)
