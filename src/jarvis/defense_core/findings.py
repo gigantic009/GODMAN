@@ -27,6 +27,7 @@ class Evidence:
             raise ValueError("observed_at must be ISO-8601") from exc
         if parsed.tzinfo is None:
             raise ValueError("observed_at must include a timezone")
+        object.__setattr__(self, "observed_at", parsed.astimezone(timezone.utc).isoformat())
 
 
 @dataclass(frozen=True)
@@ -46,6 +47,13 @@ class Finding:
         _bounded_text(self.title, "title", 256)
         _bounded_text(self.finding_id, "finding_id")
         _bounded_text(self.created_at, "created_at", 64)
+        try:
+            created = datetime.fromisoformat(self.created_at.replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("created_at must be ISO-8601") from exc
+        if created.tzinfo is None:
+            raise ValueError("created_at must include a timezone")
+        object.__setattr__(self, "created_at", created.astimezone(timezone.utc).isoformat())
         if not isinstance(self.description, str) or len(self.description) > 2000:
             raise ValueError("description must be a bounded string")
         if self.severity not in {"info", "low", "medium", "high", "critical"}:
