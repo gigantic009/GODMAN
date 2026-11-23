@@ -1,6 +1,6 @@
 # GODMAN — Personal AI Assistant
 
-A modular hybrid personal AI assistant for Windows, built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
+A Windows-first system diagnostics and defensive cybersecurity assistant, built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
 
 ## Repository layout
 
@@ -66,14 +66,11 @@ Current local security tools:
 
 These tools are analyst aids, not a certified scanner or proof of compromise. Firewall enforcement and rule changes are not yet implemented. The event collector and URL triage are limited point-in-time analyst aids, not continuous EDR or a definitive malicious-URL verdict. GODMAN currently inventories Windows Firewall and proposes a baseline only; no settings are changed. Whole-device continuous monitoring, network IPS/firewall changes, remote access, credential breach monitoring, automatic containment, and self-updates are not yet implemented. The Defender custom scan is limited to an explicitly selected workspace file/folder and requires approval. See [`docs/REQUESTED_FEATURE_COVERAGE.md`](docs/REQUESTED_FEATURE_COVERAGE.md) for an honest status matrix of all requested capabilities. See [`docs/SECURITY_RESEARCH_BASELINE.md`](docs/SECURITY_RESEARCH_BASELINE.md) for the research synthesis from CERT-In, NIST, Microsoft, Wazuh, Suricata, OPNsense, Tailscale and CISA, and [`docs/AUTONOMOUS_DEFENCE_ARCHITECTURE.md`](docs/AUTONOMOUS_DEFENCE_ARCHITECTURE.md), [`docs/DEFENSIVE_THREAT_MODEL.md`](docs/DEFENSIVE_THREAT_MODEL.md), [`docs/OPEN_SOURCE_SECURITY_INTEGRATIONS.md`](docs/OPEN_SOURCE_SECURITY_INTEGRATIONS.md), [`docs/CYBERSECURITY.md`](docs/CYBERSECURITY.md), [`docs/CYBERSECURITY_REFERENCES.md`](docs/CYBERSECURITY_REFERENCES.md), and [`docs/SECURITY.md`](docs/SECURITY.md).
 
-## Market intelligence division
 
-GODMAN's initial quantitative research engine calculates SMA, EMA, RSI, MACD,
-Bollinger Bands, historical volatility, maximum drawdown, and configurable price-move
-events from supplied chronological price data. These are descriptive analytics—not
-live quotes, predictions, or trading recommendations. Timestamped market-data feeds,
-fundamentals/filings/news ingestion, backtesting, portfolio risk, and live monitoring
-are planned integrations. See [docs/MARKET_INTELLIGENCE.md](docs/MARKET_INTELLIGENCE.md).
+## Product mission
+
+GODMAN is a Windows-first system diagnostics and defensive cybersecurity assistant. Its roadmap prioritizes endpoint health, security posture, vulnerability intelligence, safe analysis workflows, privacy, reliability, and transparent approvals. It is not a market-analysis or trading product.
+
 
 ## Requirements
 - Python 3.10+
