@@ -4,7 +4,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ## P0 — Stability and safety foundation
 - [x] Implement initial Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (unit tests added; CI verification pending).
-- [ ] Verify audit-branch changes with full test suite and Windows CI.
+- [ ] Verify audit-branch changes with full test suite and Windows CI.\n- [x] Add capability-gated endpoint adapter interface and registry scaffolding (mock-tested; native collectors not yet attached).
 - [ ] Add Windows test matrix for supported Python versions.
 - [ ] Establish Ruff linting, type-checking baseline and coverage reporting.
 - [ ] Add dependency vulnerability scanning and secret scanning in CI.
