@@ -21,7 +21,8 @@ Commands:
   /help                 Show this help
   /diagnostics          Read basic system and disk information
   /cyber                Show GODMAN cybersecurity specialization areas
-  /checkup              Run consolidated read-only Windows endpoint checkup\n  /posture              Read Windows security posture (no changes)
+  /checkup              Run consolidated read-only Windows endpoint checkup
+  /posture              Read Windows security posture (no changes)
   /firewall             Inspect Windows Firewall and show a proposed baseline (no changes)
   /events               Collect selected local Windows security events (read-only)
   /persistence          Inspect startup keys, scheduled tasks and services (read-only)
