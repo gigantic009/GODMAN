@@ -104,3 +104,19 @@ No feature is advertised as implemented before it is verified. Scanning and reme
 - [ ] Add staged/guarded enforcement with explicit policy, action budget, kill switch, recovery path and independent verification.
 - [ ] Connect verified incident feedback to rule tuning; never auto-promote untrusted telemetry or feed arbitrary content directly into enforcement.
 - [ ] Test platform adapters, permission failures, rollback, update failure, lockout protection and graceful unsupported-platform behavior.
+
+
+## P3 — Continuous global defensive knowledge updates (planned)
+- [ ] Build a configurable source registry for reputable researchers, vendor advisories, CERT/CSIRT, standards bodies and approved community sources.
+- [ ] Implement bounded feed/API retrieval, source provenance, freshness, attribution, licensing/terms review and rate limits.
+- [ ] Normalize advisories, indicators, mitigations, detection rules and defensive technique records.
+- [ ] Treat all fetched content as untrusted data; never allow it to issue agent/tool instructions.
+- [ ] Verify signatures/integrity where available, deduplicate, track superseded content and surface conflicts/uncertainty.
+- [ ] Enrich with platform applicability, ATT&CK mappings, telemetry, mitigations and confidence.
+- [ ] Extract defensive knowledge only; do not operationalize runnable offensive payloads, arbitrary commands or exploit code.
+- [ ] Generate candidate detection/mitigation updates and synthetic regression fixtures.
+- [ ] Test candidate rules for compatibility, false positives, performance and rollback in fixtures/lab.
+- [ ] Implement signed/versioned staged updates, atomic promotion, expiry, audit, changelog and rollback.
+- [ ] Permit autonomous promotion only for explicitly configured low-impact, validated defensive updates; require approval for high-impact changes.
+- [ ] Separate local incident feedback from shared knowledge; privacy-minimize and require consent before data sharing.
+- [ ] Establish a community contribution review and provenance workflow.
