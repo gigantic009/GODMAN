@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -25,11 +26,15 @@ class LocalKnowledgeStore:
                 rule_id TEXT NOT NULL, severity TEXT NOT NULL,
                 confidence REAL NOT NULL, payload TEXT NOT NULL)""")
 
+    @contextmanager
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=5)
-        db.execute("PRAGMA journal_mode=WAL")
-        db.execute("PRAGMA busy_timeout=5000")
-        return db
+        try:
+            db.execute("PRAGMA journal_mode=WAL")
+            db.execute("PRAGMA busy_timeout=5000")
+            yield db
+        finally:
+            db.close()
 
     def save_event(self, event):
         from .events import Event
