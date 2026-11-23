@@ -37,6 +37,36 @@ def _validate_payload(value: Any, depth: int = 0) -> None:
     raise TypeError("event payload must contain JSON-compatible values only")
 
 
+class FrozenDict(dict):
+    """JSON-serializable dictionary that rejects ordinary mutation."""
+    @staticmethod
+    def _blocked(*args, **kwargs):
+        raise TypeError("event/rule payloads are immutable")
+    __setitem__ = __delitem__ = clear = pop = popitem = setdefault = update = __ior__ = _blocked
+
+
+class FrozenList(list):
+    """JSON-serializable list that rejects ordinary mutation."""
+    @staticmethod
+    def _blocked(*args, **kwargs):
+        raise TypeError("event/rule payloads are immutable")
+    __setitem__ = __delitem__ = append = extend = insert = pop = remove = clear = reverse = sort = __iadd__ = __imul__ = _blocked
+
+
+def _freeze_payload(value):
+    if isinstance(value, dict):
+        frozen = FrozenDict()
+        for key, item in value.items():
+            dict.__setitem__(frozen, key, _freeze_payload(item))
+        return frozen
+    if isinstance(value, list):
+        frozen = FrozenList()
+        for item in value:
+            list.append(frozen, _freeze_payload(item))
+        return frozen
+    return value
+
+
 def _validate_timestamp(value: str, label: str) -> None:
     if not isinstance(value, str) or not value or len(value) > 64:
         raise ValueError(f"{label} must be a bounded timestamp string")
@@ -78,7 +108,7 @@ class Event:
             raise ValueError("event payload exceeds 32 KB")
         # Snapshot caller-owned structures so mutation of the original input cannot
         # silently change evidence after it has been published or persisted.
-        object.__setattr__(self, "data", json.loads(encoded))
+        object.__setattr__(self, "data", _freeze_payload(json.loads(encoded)))
 
 
 class EventBus:
