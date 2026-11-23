@@ -33,6 +33,10 @@ class LocalKnowledgeStore:
             db.execute("PRAGMA journal_mode=WAL")
             db.execute("PRAGMA busy_timeout=5000")
             yield db
+            db.commit()
+        except Exception:
+            db.rollback()
+            raise
         finally:
             db.close()
 
