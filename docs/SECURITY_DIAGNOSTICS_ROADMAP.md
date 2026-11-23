@@ -3,7 +3,7 @@
 This roadmap is prioritized around usable, measurable defensive capabilities across Windows, Linux, macOS, servers, and authorized cloud/network environments. See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md). Features are not considered complete until tests and documentation are updated.
 
 ## P0 — Stability and safety foundation
-- [x] Implement initial Defensive Core foundation: normalized Event/EventBus, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment (unit tests added; CI verification pending).
+- [x] Implement initial Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (unit tests added; CI verification pending).
 - [ ] Verify audit-branch changes with full test suite and Windows CI.
 - [ ] Add Windows test matrix for supported Python versions.
 - [ ] Establish Ruff linting, type-checking baseline and coverage reporting.
