@@ -146,7 +146,8 @@ def main() -> None:
                 print(json.dumps(registry.execute("inspect_windows_persistence"), indent=2, ensure_ascii=False))
             except Exception as exc:
                 print(f"Persistence inventory unavailable: {type(exc).__name__}: {exc}")
-            continue\n        if raw == "/events":
+            continue
+        if raw == "/events":
             try:
                 print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
             except Exception as exc:
