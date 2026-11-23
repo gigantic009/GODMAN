@@ -1,6 +1,6 @@
 # GODMAN — Personal AI Assistant
 
-A Windows-first system diagnostics and defensive cybersecurity assistant, built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
+A cross-platform system diagnostics and defensive cybersecurity assistant (Windows is the first implementation target), built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
 
 ## Repository layout
 
@@ -16,7 +16,7 @@ GODMAN/
 └── run.py                   # Application entry point
 ```
 
-See [docs/README.md](docs/README.md) for the documentation index, [product scope](docs/PRODUCT_SCOPE.md), and [security/diagnostics roadmap](docs/SECURITY_DIAGNOSTICS_ROADMAP.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute and [SECURITY.md](SECURITY.md) to report vulnerabilities privately.
+See [cross-platform architecture](docs/CROSS_PLATFORM_ARCHITECTURE.md), [docs/README.md](docs/README.md) for the documentation index, [product scope](docs/PRODUCT_SCOPE.md), and [security/diagnostics roadmap](docs/SECURITY_DIAGNOSTICS_ROADMAP.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute and [SECURITY.md](SECURITY.md) to report vulnerabilities privately.
 
 ## Current capabilities (Phases 1–5)
 - OpenAI Responses API conversation with bounded session context.
