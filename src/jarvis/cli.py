@@ -141,7 +141,12 @@ def main() -> None:
             except Exception as exc:
                 print(f"Endpoint checkup unavailable: {type(exc).__name__}: {exc}")
             continue
-        if raw == "/persistence":\n            try:\n                print(json.dumps(registry.execute("inspect_windows_persistence"), indent=2, ensure_ascii=False))\n            except Exception as exc:\n                print(f"Persistence inventory unavailable: {type(exc).__name__}: {exc}")\n            continue\n        if raw == "/events":
+        if raw == "/persistence":
+            try:
+                print(json.dumps(registry.execute("inspect_windows_persistence"), indent=2, ensure_ascii=False))
+            except Exception as exc:
+                print(f"Persistence inventory unavailable: {type(exc).__name__}: {exc}")
+            continue\n        if raw == "/events":
             try:
                 print(json.dumps(registry.execute("collect_windows_security_events"), indent=2, ensure_ascii=False))
             except Exception as exc:
