@@ -49,6 +49,52 @@ class ToolTests(unittest.TestCase):
                 registry.execute("bounded", args)
         self.assertEqual(registry.execute("bounded", {"items": [1, 2], "count": 2}), "ok")
 
+    def test_schema_definitions_are_rejected_at_registration(self):
+        invalid = [
+            {"type": "object", "properties": {"value": {"type": "string", "pattern": "x"}},
+             "required": ["value"], "additionalProperties": False},
+            {"type": "object", "properties": {"value": {"type": "string"}},
+             "required": [], "additionalProperties": False},
+            {"type": "object", "properties": {"value": {"type": "string"}},
+             "required": ["value"], "additionalProperties": True},
+            {"type": "array", "minItems": 2, "maxItems": 1, "items": {"type": "string"}},
+            {"type": "array", "items": {}},
+            {"type": "object", "properties": {"value": {"type": "integer", "enum": [True]}},
+             "required": ["value"], "additionalProperties": False},
+            {"type": "object", "properties": {"value": {"type": "string", "maxLength": 100001}},
+             "required": ["value"], "additionalProperties": False},
+            {"type": "object", "properties": {"value": {"type": "number", "minimum": float("inf")}},
+             "required": ["value"], "additionalProperties": False},
+            {"properties": {}, "required": [], "additionalProperties": False},
+        ]
+        for schema in invalid:
+            with self.subTest(schema=schema):
+                registry = ToolRegistry(SecurityPolicy(), self.audit)
+                with self.assertRaises(ValueError):
+                    registry.register(Tool("invalid", "test", "read", lambda **kwargs: None, schema))
+
+    def test_registered_schema_is_snapshotted_and_enum_is_type_strict(self):
+        schema = {"type": "object", "properties": {"value": {"type": "integer", "enum": [1]}},
+                  "required": ["value"], "additionalProperties": False}
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        registry.register(Tool("snap", "test", "read", lambda value: "ok", schema))
+        schema["properties"]["value"]["enum"].append(2)
+        exported = registry.model_tools()[0]["parameters"]
+        exported["properties"]["value"]["enum"].append(2)
+        self.assertEqual(registry.execute("snap", {"value": 1}), "ok")
+        with self.assertRaises(ValueError):
+            registry.execute("snap", {"value": 2})
+        with self.assertRaises(ValueError):
+            registry.execute("snap", {"value": True})
+
+    def test_number_schema_rejects_overflowing_integer_values(self):
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        schema = {"type": "object", "properties": {"value": {"type": "number"}},
+                  "required": ["value"], "additionalProperties": False}
+        registry.register(Tool("numeric_overflow", "test", "read", lambda value: value, schema))
+        with self.assertRaises(ValueError):
+            registry.execute("numeric_overflow", {"value": 10**1000})
+
     def test_audit_redacts_secrets_and_email(self):
         self.audit.record("test", "read", "success", "api_key=abc123 user@example.com")
         details = self.audit.recent()[0]["details"]
