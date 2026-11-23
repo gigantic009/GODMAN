@@ -20,6 +20,8 @@ class DefensiveCoreTests(unittest.TestCase):
             Event("x", "source", {}, timestamp="not-a-date")
         with self.assertRaises(ValueError):
             Event("x", "source", {}, schema_version=True)
+        offset_event = Event("x", "source", {}, timestamp="2026-11-23T15:00:00+05:30")
+        self.assertTrue(offset_event.timestamp.endswith("+00:00"))
 
     def test_event_payload_is_snapshotted(self):
         payload = {"nested": {"items": [1, 2]}}
