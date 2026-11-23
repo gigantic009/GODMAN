@@ -5,6 +5,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 ## P0 — Stability and safety foundation
 - [x] Implement initial Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (unit tests added; CI verification pending).
 - [x] Integrate a central action-policy decision into the tool dispatcher; the existing explicit approval callback remains a second gate for non-read actions (CI verification pending).
+- [x] Snapshot and freeze normalized event payloads and detection-rule conditions to prevent ordinary post-publication mutation (targeted tests added; CI verification pending).
 - [ ] Verify audit-branch changes with full test suite and Windows CI.
 - [x] Add capability-gated endpoint adapter interface, registry, and normalized-event conversion (fixture tests added; native collectors not yet attached).
 - [ ] Add Windows test matrix for supported Python versions.
@@ -15,6 +16,13 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Add resource/time/output limits for every subprocess and external adapter.
 - [ ] Document data flow, storage, retention, API transmission and opt-out.
 - [ ] Add configuration validation and diagnostics for missing permissions/dependencies.
+
+### Phase 1 verification evidence — 23 November 2026
+
+- A local isolated scratch harness ran 12 targeted tests covering normalized events, payload/rule immutability, EventBus retention/subscriber isolation, detection, evidence, adapter capability gating/normalization, SQLite round-trip, and central tool-dispatch policy/approval boundaries; all 12 passed.
+- This was a copied-subset harness, not the repository's full test suite or a native-platform test.
+- GitHub Actions has no status/run available for the latest PR merge ref in this verification attempt. An earlier run failed compilation on a malformed literal newline in the core exports; that defect has been corrected on the audit branch.
+- Native endpoint collectors are still not attached, and Windows/Linux/macOS integration tests remain outstanding. Phase 1 code integration is progressing, but acceptance is not yet verified.
 
 ## P1 — Diagnostics
 - [ ] CPU, memory, storage and system uptime snapshot with historical trends.
