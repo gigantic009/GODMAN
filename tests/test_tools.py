@@ -77,12 +77,19 @@ class ToolTests(unittest.TestCase):
 
     def test_dispatch_uses_central_policy_and_denies_unlisted_read_action(self):
         called = []
-        central = ActionPolicy(allowed_read_actions=set(), approval_actions={"write_tool"})
+        central = ActionPolicy(allowed_read_actions=set(), approval_actions={"tool:write"})
         registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit, central)
         registry.register(Tool("read", "test", "read", lambda: called.append(True)))
         with self.assertRaises(PermissionError):
             registry.execute("read")
         self.assertEqual(called, [])
+
+    def test_custom_policy_denies_write_even_when_approval_callback_accepts(self):
+        central = ActionPolicy(allowed_read_actions=set(), approval_actions=set())
+        registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit, central)
+        registry.register(Tool("write", "test", "write", lambda: "should not run"))
+        with self.assertRaises(PermissionError):
+            registry.execute("write")
 
     def test_write_requires_explicit_approval_after_policy_gate(self):
         registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit)
