@@ -252,20 +252,6 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
     ))
 
     registry.register(Tool(
-        "analyze_market_prices",
-        "Calculate descriptive technical indicators and configurable price-move events from user-supplied chronological closing prices. No live quote retrieval or trade execution.",
-        "read",
-        lambda closes, move_threshold: {
-            "snapshot": market_snapshot(closes),
-            "price_events": detect_price_events(closes, move_threshold),
-        },
-        _object({
-            "closes": {"type": "array", "items": {"type": "number"}, "description": "At least 50 chronological closing prices; validated by the tool"},
-            "move_threshold": {"type": "number", "minimum": 0.001, "maximum": 0.99},
-        }, ["closes", "move_threshold"]),
-    ))
-
-    registry.register(Tool(
         "collect_windows_security_posture",
         "Read a bounded point-in-time Windows Defender, Firewall, BitLocker, and recent hotfix status snapshot. Read-only; no remediation or network scan.",
         "read",
