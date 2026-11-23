@@ -6,7 +6,11 @@ from math import isfinite
 def _series(values, minimum=1):
     if not isinstance(values, (list, tuple)) or len(values) < minimum:
         raise ValueError(f"Need at least {minimum} observations.")
+    if any(isinstance(x, bool) for x in values):
+        raise ValueError("Prices must be numeric, not boolean.")
     result = [float(x) for x in values]
+    if any(not isfinite(x) for x in result):
+        raise ValueError("Prices must be finite.")
     if any(x <= 0 for x in result):
         raise ValueError("Prices must be positive.")
     return result
