@@ -2,6 +2,22 @@
 
 A modular hybrid personal AI assistant for Windows, built with Python. GODMAN combines cloud reasoning with a local, allow-listed tool layer, optional voice I/O, and persistent SQLite memory.
 
+## Repository layout
+
+```text
+GODMAN/
+├── .github/workflows/       # CI automation
+├── docs/                    # Architecture, roadmap, security and feature docs
+├── src/jarvis/              # Application package and modules
+├── tests/                   # Offline unit tests
+├── .env.example             # Environment-variable template
+├── requirements.txt          # Core dependencies
+├── requirements-voice.txt   # Optional voice dependencies
+└── run.py                   # Application entry point
+```
+
+See [docs/README.md](docs/README.md) for a documentation index.
+
 ## Current capabilities (Phases 1–5)
 - OpenAI Responses API conversation with bounded session context.
 - Function/tool calling through an explicit registry (no arbitrary shell tool).
