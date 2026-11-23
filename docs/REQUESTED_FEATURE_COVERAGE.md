@@ -31,7 +31,7 @@ Status meanings: Implemented (limited) = narrow code exists; Designed = architec
 | Archive-bomb inspection | Implemented (limited) | ZIP metadata only; no extraction and no general archive-format coverage. |
 | Phishing URL analysis | Implemented (limited) | /url performs offline structural checks only; no reputation, redirect, DNS or page analysis. |
 | Attachment/file reputation | Not implemented | No trusted reputation provider or sandbox integration. |
-| Vulnerability inventory and patch recommendations | Not implemented | No software inventory/CVE matching or patch workflow. |
+| Vulnerability inventory and patch recommendations | Not implemented | No software inventory/CVE matching or patch workflow; roadmap prioritizes NVD/CISA KEV/vendor advisory matching with evidence and remediation verification. |
 | Incident evidence and recovery | Not implemented | No case manager, protected evidence store, chain of custody or restore workflow. |
 
 ## Network, identity, account and remote protection
@@ -58,7 +58,7 @@ Status meanings: Implemented (limited) = narrow code exists; Designed = architec
 | Controlled self-update | Not implemented | No signed releases, SBOM, dependency pinning, staged update, owner approval or rollback. |
 | Safe rollback / kill switch | Not implemented | Architecture calls for these; no complete operational mechanism. |
 
-| One-command Windows endpoint checkup | Implemented (limited) | `/checkup` aggregates point-in-time Defender posture, firewall inventory and selected events; it performs no remediation and is not continuous monitoring. |\n\n## Build order and release gates
+| One-command Windows endpoint checkup | Implemented (limited) | `/checkup` aggregates point-in-time Defender posture, firewall inventory and selected events; it performs no remediation and is not continuous monitoring. |\n\nSee [SECURITY_DIAGNOSTICS_ROADMAP.md](SECURITY_DIAGNOSTICS_ROADMAP.md) for the dedicated product roadmap. Market/stock analytics are outside GODMAN's product scope.\n\n## Build order and release gates
 
 1. Owner trust foundation: Windows account SID binding, secure bootstrap, owner-only approval, protected configuration, signed code/policy and recovery.
 2. Endpoint firewall: capture effective policy, generate a reviewable diff, back up, apply one approved change, verify, and roll back on failure.
