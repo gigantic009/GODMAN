@@ -31,6 +31,13 @@ class Tool:
 def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments") -> None:
     """Validate the supported JSON-schema subset at the runtime tool boundary."""
     kind = schema.get("type")
+    # Global limits apply even when a tool schema omits explicit bounds.
+    if isinstance(value, str) and len(value) > 100_000:
+        raise ValueError(f"{path} exceeds the global string limit.")
+    if isinstance(value, (list, tuple)) and len(value) > 1_000:
+        raise ValueError(f"{path} exceeds the global array limit.")
+    if isinstance(value, dict) and len(value) > 100:
+        raise ValueError(f"{path} exceeds the global object-key limit.")
     if kind == "object":
         if not isinstance(value, dict):
             raise ValueError(f"{path} must be an object.")
