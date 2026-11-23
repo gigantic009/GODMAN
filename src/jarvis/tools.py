@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .security import ApprovalRequired, AuditLog, SecurityPolicy
+from .defense_core.policy import ActionPolicy
 from .cybersecurity import analyze_security_log, inspect_file_static, sha256_workspace_file
 from .security_posture import collect_windows_security_posture
 from .archive_safety import inspect_zip_safety
@@ -92,12 +93,35 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
 
 
 class ToolRegistry:
-    def __init__(self, policy: SecurityPolicy, audit: AuditLog):
+    """Schema-checked tool dispatcher with a central action-policy boundary."""
+
+    _RISK_TO_ACTION = {
+        "read": "read_only_observation",
+        "write": "write_tool",
+        "system": "system_tool",
+        "external": "external_tool",
+    }
+
+    def __init__(self, policy: SecurityPolicy, audit: AuditLog, action_policy: ActionPolicy | None = None):
         self.policy = policy
         self.audit = audit
+        self.action_policy = action_policy or ActionPolicy(
+            allowed_read_actions={"read_only_observation"},
+            approval_actions={"write_tool", "system_tool", "external_tool"},
+        )
         self._tools: dict[str, Tool] = {}
 
     def register(self, tool: Tool) -> None:
+        if not isinstance(tool, Tool):
+            raise TypeError("registered item must be a Tool")
+        if not isinstance(tool.name, str) or not tool.name.strip() or len(tool.name) > 128:
+            raise ValueError("tool name must be non-empty and bounded")
+        if tool.risk not in self._RISK_TO_ACTION:
+            raise ValueError("tool risk must be read, write, system, or external")
+        if not callable(tool.handler):
+            raise TypeError("tool handler must be callable")
+        if not isinstance(tool.parameters, dict):
+            raise TypeError("tool parameters must be a schema dictionary")
         if tool.name in self._tools:
             raise ValueError(f"Tool already registered: {tool.name}")
         self._tools[tool.name] = tool
@@ -126,7 +150,17 @@ class ToolRegistry:
         tool = self._tools[name]
         try:
             _validate_schema(args, tool.parameters)
+            action = self._RISK_TO_ACTION[tool.risk]
+            decision = self.action_policy.evaluate(action)
+            if not decision.allowed and not decision.requires_approval:
+                raise PermissionError(decision.reason)
+            # The explicit approval callback remains a second gate for
+            # write/system/external tools; an LLM cannot set this approval flag.
             self.policy.authorize(name, args, risk=tool.risk)
+            if decision.requires_approval:
+                decision = self.action_policy.evaluate(action, approval_granted=True)
+            if not decision.allowed:
+                raise PermissionError(decision.reason)
             result = tool.handler(**args)
             self.audit.record(name, tool.risk, "success", "Completed")
             return result
