@@ -63,9 +63,9 @@ class AuditLog:
         # Keep audit entries useful while reducing accidental secret leakage.
         text = str(details)
         patterns = [
-            (r"(?i)(api[_-]?key|token|password|secret|authorization)\\s*[:=]\\s*[^\\s,;]+", r"\\1=[REDACTED]"),
-            (r"(?i)bearer\\s+[a-z0-9._~+/-]+=*", "Bearer [REDACTED]"),
-            (r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}", "[EMAIL]"),
+            (r"(?i)(api[_-]?key|token|password|secret|authorization)\s*[:=]\s*[^\s,;]+", r"\\1=[REDACTED]"),
+            (r"(?i)bearer\s+[a-z0-9._~+/-]+=*", "Bearer [REDACTED]"),
+            (r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", "[EMAIL]"),
         ]
         for pattern, replacement in patterns:
             text = re.sub(pattern, replacement, text)
