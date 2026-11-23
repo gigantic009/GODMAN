@@ -26,8 +26,10 @@ class DetectionRule:
             if not isinstance(key, str) or not key.strip() or len(key) > 128:
                 raise ValueError("condition keys must be bounded strings")
         _validate_payload(self.field_equals)
-        if len(json.dumps(self.field_equals, ensure_ascii=False).encode("utf-8")) > 8192:
+        encoded_conditions = json.dumps(self.field_equals, ensure_ascii=False, separators=(",", ":"))
+        if len(encoded_conditions.encode("utf-8")) > 8192:
             raise ValueError("rule conditions exceed 8 KB")
+        object.__setattr__(self, "field_equals", json.loads(encoded_conditions))
         if self.severity not in {"info", "low", "medium", "high", "critical"}:
             raise ValueError("invalid severity")
         if isinstance(self.confidence, bool) or not isinstance(self.confidence, (int, float)) or not 0 <= self.confidence <= 1:
