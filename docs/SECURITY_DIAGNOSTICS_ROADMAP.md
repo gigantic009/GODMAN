@@ -35,7 +35,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [x] Strict registration-time tool-schema validation and regression coverage
 - [x] Cross-version CI compilation and 77 offline unit tests
 
-<text>Live/native collector integration, Windows-specific test coverage and wider platform/operational readiness are follow-on work; this acceptance applies to the Defensive Core foundation, not to GODMAN as a complete endpoint security product.</text>
+> Live/native collector integration, Windows-specific test coverage and wider platform/operational readiness are follow-on work; this acceptance applies to the Defensive Core foundation, not to GODMAN as a complete endpoint security product.
 
 ## P1 — Diagnostics
 - [ ] CPU, memory, storage and system uptime snapshot with historical trends.
