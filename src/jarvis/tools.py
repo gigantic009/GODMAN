@@ -95,6 +95,8 @@ def _validate_schema_definition(schema: Any, depth: int = 0) -> None:
     if kind == "object":
         properties = schema.get("properties", {})
         required = schema.get("required", [])
+        schema.setdefault("properties", properties)
+        schema.setdefault("required", required)
         if not isinstance(properties, dict) or len(properties) > 100:
             raise ValueError("Object properties must be a bounded dictionary.")
         if not isinstance(required, list) or len(required) > 100 or any(not isinstance(x, str) for x in required):
