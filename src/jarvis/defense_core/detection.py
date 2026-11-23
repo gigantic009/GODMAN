@@ -27,7 +27,7 @@ class DetectionRule:
 
 
 class DetectionEngine:
-    def __init__(self, rules=()):
+    def __init__(self, rules=(), store=None):
         self.rules = []
         self.findings = []
         for rule in rules:
