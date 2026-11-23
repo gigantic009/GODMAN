@@ -1,0 +1,31 @@
+# GODMAN Product Scope and Engineering Standards
+
+## Mission
+GODMAN is a Windows-first system diagnostics and defensive cybersecurity assistant. It is intended to help an owner understand device health, assess security posture, investigate suspicious artifacts and events, correlate vulnerability advisories with installed software, and safely plan remediation.
+
+## Core product pillars
+- System diagnostics: Windows and OS information, CPU, memory, storage, processes, services, health signals, performance, logs and reliability.
+- Endpoint security: Microsoft Defender posture, firewall configuration, security events, attack-surface indicators and hardening recommendations.
+- Vulnerability management: software inventory, CVE/advisory/KEV correlation, prioritization, mitigation guidance and remediation verification.
+- Threat analysis: safe file and archive inspection, hashes, URL structure, log triage, evidence timelines and indicator correlation.
+- Network security: authorized asset inventory and passive telemetry; tightly scoped active checks with explicit target authorization and safety profiles.
+- Privacy and reliability: data minimization, redaction, consent, bounded resource usage, recovery, durable audit and graceful failure.
+
+## Non-goals
+GODMAN is not a trading/market-analysis tool, unrestricted shell agent, offensive exploitation framework, credential harvester, or self-authorizing system administrator.
+
+## Product safety
+- Read-only by default.
+- Scope scans to owner-controlled or explicitly authorized assets.
+- Preview and approval before mutation, containment or remediation.
+- Keep audit evidence without storing secrets or unnecessary personal data.
+- No auto-execution of untrusted samples.
+- Avoid exposing network services or remote control unless a separately reviewed design, identity, authentication, authorization and recovery model exists.
+
+## Quality gates
+- Unit, integration, regression and Windows-native tests.
+- Static analysis, dependency and secret scanning.
+- Test fixtures and mocked destructive actions.
+- Timeouts, bounded output, resource ceilings and graceful degradation.
+- Security review and clear limitations for each feature.
+- Release artifacts and provenance reviewed before publication.
