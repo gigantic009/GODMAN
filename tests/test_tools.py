@@ -5,6 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from jarvis.security import ApprovalRequired, AuditLog, SecurityPolicy
+from jarvis.defense_core.policy import ActionPolicy
 from jarvis.tools import Tool, ToolRegistry, list_workspace_files, read_workspace_file, create_workspace_file
 
 
@@ -73,6 +74,25 @@ class ToolTests(unittest.TestCase):
         with self.assertRaises(ApprovalRequired):
             registry.execute("write")
         self.assertEqual(self.audit.recent()[0]["outcome"], "denied")
+
+    def test_dispatch_uses_central_policy_and_denies_unlisted_read_action(self):
+        called = []
+        central = ActionPolicy(allowed_read_actions=set(), approval_actions={"write_tool"})
+        registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit, central)
+        registry.register(Tool("read", "test", "read", lambda: called.append(True)))
+        with self.assertRaises(PermissionError):
+            registry.execute("read")
+        self.assertEqual(called, [])
+
+    def test_write_requires_explicit_approval_after_policy_gate(self):
+        registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit)
+        registry.register(Tool("write", "test", "write", lambda: "approved"))
+        self.assertEqual(registry.execute("write"), "approved")
+
+    def test_tool_risk_class_is_validated_at_registration(self):
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        with self.assertRaises(ValueError):
+            registry.register(Tool("unsafe", "test", "unknown", lambda: None))
 
     def test_workspace_path_traversal_is_rejected(self):
         with self.assertRaises(ValueError):
