@@ -26,6 +26,10 @@ class DefensiveCoreTests(unittest.TestCase):
         event = Event("x", "source", payload)
         payload["nested"]["items"].append(3)
         self.assertEqual(event.data["nested"]["items"], [1, 2])
+        with self.assertRaises(TypeError):
+            event.data["nested"]["items"].append(3)
+        with self.assertRaises(TypeError):
+            event.data["nested"]["new"] = "value"
 
     def test_subscriber_failure_is_isolated(self):
         bus = EventBus()
@@ -59,6 +63,9 @@ class DefensiveCoreTests(unittest.TestCase):
         self.assertEqual(engine.process(Event("process.start", "collector", {"encoded": False})), [])
         with self.assertRaises(ValueError):
             DetectionRule("R", "title", "x", {"bad": float("nan")})
+        rule = DetectionRule("R", "title", "x", {"items": [1]})
+        with self.assertRaises(TypeError):
+            rule.field_equals["items"].append(2)
 
     def test_finding_requires_evidence_and_valid_confidence(self):
         with self.assertRaises(ValueError):
