@@ -16,7 +16,7 @@ GODMAN/
 └── run.py                   # Application entry point
 ```
 
-See [docs/README.md](docs/README.md) for a documentation index, [product scope](docs/PRODUCT_SCOPE.md), and [security/diagnostics roadmap](docs/SECURITY_DIAGNOSTICS_ROADMAP.md).
+See [docs/README.md](docs/README.md) for the documentation index, [product scope](docs/PRODUCT_SCOPE.md), and [security/diagnostics roadmap](docs/SECURITY_DIAGNOSTICS_ROADMAP.md). See [CONTRIBUTING.md](CONTRIBUTING.md) to contribute and [SECURITY.md](SECURITY.md) to report vulnerabilities privately.
 
 ## Current capabilities (Phases 1–5)
 - OpenAI Responses API conversation with bounded session context.
