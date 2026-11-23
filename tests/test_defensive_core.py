@@ -25,7 +25,7 @@ class DefensiveCoreTests(unittest.TestCase):
  def test_finding_requires_evidence_and_valid_confidence(self):
   with self.assertRaises(ValueError): Finding("R","title","high",0.8,())
   with self.assertRaises(ValueError): Finding("R","title","high",1.1,(Evidence("e","summary","source"),))
- def test_duplicate_rule_rejected(self):
+ def test_bus_attachment_emits_findings(self):\n  bus=EventBus(); engine=DetectionEngine([DetectionRule(\"R\",\"title\",\"x\",{})]); engine.attach(bus); bus.publish(Event(\"x\",\"source\",{})); self.assertEqual(len(engine.findings),1)\n def test_duplicate_rule_rejected(self):
   e=DetectionEngine(); r=DetectionRule("R","title","type",{}); e.add_rule(r)
   with self.assertRaises(ValueError): e.add_rule(r)
 if __name__ == "__main__": unittest.main()
