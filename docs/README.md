@@ -18,6 +18,3 @@ Use this page to find project documentation by topic.
 - [Security policy](SECURITY.md)
 - [Windows firewall milestone](WINDOWS_FIREWALL_MILESTONE.md)
 - [Windows first checkup](WINDOWS_FIRST_CHECKUP.md)
-
-## Market intelligence
-- [Market intelligence](MARKET_INTELLIGENCE.md)
