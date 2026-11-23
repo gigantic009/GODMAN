@@ -50,6 +50,8 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
         if not isinstance(value, list):
             raise ValueError(f"{path} must be an array.")
         item_schema = schema.get("items")
+        if len(value) < schema.get("minItems", 0) or len(value) > schema.get("maxItems", float("inf")):
+            raise ValueError(f"{path} length is outside permitted bounds.")
         if item_schema:
             for i, item in enumerate(value):
                 _validate_schema(item, item_schema, f"{path}[{i}]")
@@ -61,6 +63,10 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
     elif kind == "integer":
         if isinstance(value, bool) or not isinstance(value, int):
             raise ValueError(f"{path} must be an integer.")
+        if "minimum" in schema and value < schema["minimum"]:
+            raise ValueError(f"{path} is below the minimum.")
+        if "maximum" in schema and value > schema["maximum"]:
+            raise ValueError(f"{path} is above the maximum.")
     elif kind == "number":
         if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(float(value)):
             raise ValueError(f"{path} must be a finite number.")
@@ -199,8 +205,9 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
     registry = ToolRegistry(policy or SecurityPolicy(), audit)
     registry.register(Tool("system_summary", "Read basic operating-system and Python information.", "read",
                            system_summary, _object({}, [])))
-    registry.register(Tool("disk_summary", "Read disk capacity for a path.", "read", disk_summary,
-                           _object({"path": {"type": "string", "description": "Drive or directory path; use the current directory when unsure"}}, ["path"])))
+    registry.register(Tool("disk_summary", "Read disk capacity for the configured GODMAN workspace only.", "read",
+                           lambda: disk_summary(str(workspace)),
+                           _object({}, [])))
     registry.register(Tool("list_workspace_files", "List entries inside the configured GODMAN workspace.", "read",
                            lambda relative_path: list_workspace_files(str(workspace), relative_path),
                            _object({"relative_path": {"type": "string"}}, ["relative_path"])))
