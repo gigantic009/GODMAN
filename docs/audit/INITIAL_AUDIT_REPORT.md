@@ -1,7 +1,7 @@
 # GODMAN Engineering Audit — Initial Findings
 
 **Audit date:** 2026-11-23  
-**Scope:** Repository code review of the current `main` snapshot; analysis of local tool architecture, Windows integrations, data handling, tests and CI.  
+**Scope:** Repository code review of the current audit snapshot; analysis of local tool architecture, Windows integrations, data handling, tests and CI.  
 **Environment limitation:** No execution on the owner’s physical Windows device occurred. This is a static review, not a completed penetration test or hardware validation.
 
 ## Executive summary
@@ -44,13 +44,7 @@ The review also identified hardening opportunities. Priorities below are provisi
 **Remediation:** Use safer file creation primitives, no-follow/atomic techniques where supported, revalidate parent paths, and clearly document the local attacker model.  
 **Verification:** Platform-specific adversarial symlink/race tests in a disposable directory.
 
-### G-005 — Financial indicator validation does not consistently reject non-finite inputs
-**Severity:** Medium  
-**Area:** Correctness / input validation  
-**Evidence:** `markets._series()` converts values to float and checks positivity, but does not reject NaN or positive infinity. `ema()` has a finite-value check, but other indicator functions use `_series()`.  
-**Risk:** Non-finite values may propagate into calculations or produce inconsistent outputs.  
-**Remediation:** Validate finiteness centrally in `_series()`; add tests for NaN, positive/negative infinity, booleans and malformed values.  
-**Verification:** Every indicator rejects non-finite values deterministically.
+
 
 ### G-006 — Audit log records details without a central redaction policy
 **Severity:** Low/Medium (provisional)  
@@ -110,13 +104,12 @@ No remote hosts were scanned. No exploitation, credential testing, firewall muta
 ## Recommended order
 
 1. G-001: runtime schema validation.
-2. G-005: finite-number validation.
-3. G-002: restrict diagnostic path scope.
-4. G-003/G-006: privacy and redaction safeguards.
-5. G-004: filesystem race hardening.
-6. G-007/G-008: CI and native Windows validation.
-7. G-009: URL parsing test corpus.
-8. G-010: hardware/reliability protocol and local measurements.
+2. G-002: restrict diagnostic path scope.
+3. G-003/G-006: privacy and redaction safeguards.
+4. G-004: filesystem race hardening.
+5. G-007/G-008: CI and native Windows validation.
+6. G-009: URL parsing test corpus.
+7. G-010: hardware/reliability protocol and local measurements.
 
 
 ## Remediation progress (audit branch)
@@ -129,4 +122,4 @@ Changes implemented in `qa/security-audit-2026-11`, pending test execution and r
 - G-006: Audit details are centrally redacted for common credential patterns and email addresses; this remains best-effort.
 - G-003: Added a data-handling notice explaining workspace reads and model-service transmission.
 
-Regression tests were added for argument validation, array/numeric bounds, non-finite market values, and audit redaction. These changes have **not yet been executed**; verification remains pending.
+Regression tests were added for argument validation, array bounds, and audit redaction. These changes have **not yet been executed**; verification remains pending.
