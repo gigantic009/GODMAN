@@ -179,6 +179,9 @@ class ToolRegistry:
         except ApprovalRequired as exc:
             self.audit.record(name, tool.risk, "denied", str(exc))
             raise
+        except PermissionError as exc:
+            self.audit.record(name, tool.risk, "denied", str(exc))
+            raise
         except Exception as exc:
             self.audit.record(name, tool.risk, "error", type(exc).__name__)
             raise
