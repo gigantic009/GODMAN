@@ -55,3 +55,18 @@ GODMAN should evolve from point-in-time inspection toward a defensive feedback l
 
 ### Response boundaries
 GODMAN may defend assets the user owns or is explicitly authorized to administer. Its meaning of **retaliation is defensive response**, not hack-back: it must not attack, exploit, DDoS, infiltrate, surveil or damage an attacker's device, infrastructure or account, nor pursue targets based on attribution guesses. Remote threat infrastructure may be reported to providers or authorities through user-approved workflows. Active network actions require explicit target scope and rate limits. High-impact containment and remediation require approval unless a user has separately configured a narrow, documented emergency policy.
+
+## User-protection intelligence: exposure monitoring
+GODMAN may offer opt-in exposure monitoring for accounts and personal data, using privacy-preserving methods and reputable breach-notification providers or user-authorized sources. It must not collect or store plaintext passwords, request passwords to check breach status, or expose sensitive data in logs or reports.
+- Monitor user-approved email addresses, domains the user owns, and selected accounts using provider-supported APIs and authorization.
+- Where supported, use privacy-preserving password breach checks (e.g., k-anonymity hash-prefix protocols) without transmitting a full password or hash; never ask users to paste credentials into GODMAN.
+- Report breach source/date when available, affected data categories, confidence, and steps: change password at the affected site, use unique credentials, enable MFA/passkeys, revoke sessions, review recovery methods and suspicious activity.
+- Alert on phishing/domain impersonation and exposed secrets only through scoped, reputable data sources and explicit consent. Avoid indiscriminate scraping or collection of third-party personal data.
+- Notifications should minimize disclosure, offer safe links and avoid putting leaked values or secrets in email/push notification bodies.
+- Treat breach information as evidence of exposure, not proof of current compromise; prioritize verified findings and provide an incident checklist.
+
+## Autonomous response modes
+- **Observe:** collect and alert; no changes.
+- **Guard:** automatically apply pre-approved, reversible, low-impact actions within a user-defined scope and action budget.
+- **Respond:** request approval for higher-impact actions, including process termination, isolation, credential revocation, system changes or recovery operations unless the owner configured a narrowly bounded emergency policy.
+- **Emergency:** preconfigured containment policy, with expiry, kill switch, logging, safeguards against lockout and post-action report. Never perform hack-back or offensive actions against third-party systems.
