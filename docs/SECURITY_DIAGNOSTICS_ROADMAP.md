@@ -19,11 +19,10 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Phase 1 Defensive Core acceptance and verification — 23 November 2026
 
-- GitHub Actions run [45169573957](https://github.com/gigantic009/GODMAN/actions/runs/45169573957) passed for code commit `7336c6a5eb5cbd34aa721add1ad9c93a7624cd66`: source compilation and **77 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
-- The passing matrix includes the strict tool-schema boundary, schema snapshot mutation, enum and numeric/integer overflow regressions, nested arrays, serialized EventBus/detection processing and concurrency retention test.
-- CI previously exposed a missing default `required` key in tool schemas; the schema normalization fix was included and verified in the successful runs.
-- Subsequent commits after the verified code SHA are documentation-only updates. CI for the newest documentation commit is pending.
-- Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding. Phase 1 acceptance is not yet met.
+- GitHub Actions run [45169875803](https://github.com/gigantic009/GODMAN/actions/runs/45169875803) passed for current branch commit `3153b273a428b85147255935c59a863073b1a9fe`: compilation and **77 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
+- The passing matrix includes strict tool-schema validation, schema snapshot mutation, enum and numeric/integer overflow regressions, nested arrays, serialized EventBus/detection processing and concurrency retention.
+- CI previously exposed a missing default `required` key in tool schemas; the normalization fix was included and verified in the passing run.
+- Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding.
 
 ### Defensive Core foundation acceptance
 
