@@ -69,6 +69,12 @@ class DefensiveCoreTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             rule.field_equals["items"].append(2)
 
+    def test_evidence_and_finding_timestamps_normalize_to_utc(self):
+        evidence = Evidence("event", "summary", "source", "2026-11-23T15:00:00+05:30")
+        self.assertTrue(evidence.observed_at.endswith("+00:00"))
+        finding = Finding("R", "title", "low", 0.5, (evidence,), created_at="2026-11-23T15:00:00+05:30")
+        self.assertTrue(finding.created_at.endswith("+00:00"))
+
     def test_finding_requires_evidence_and_valid_confidence(self):
         with self.assertRaises(ValueError):
             Finding("R", "title", "high", 0.8, ())
