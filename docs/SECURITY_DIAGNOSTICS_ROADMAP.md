@@ -26,6 +26,8 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 
 ### Defensive Core foundation acceptance
 
+- Dispatcher creates a bounded JSON-only argument snapshot before schema validation; approval callbacks receive a separate copy, so callback or caller mutation cannot alter the validated handler payload. Payloads are capped at 256 KB and structural limits.
+
 - [x] Central tool-policy decision and explicit approval boundary
 - [x] Normalized event schema, bounded payloads, immutable snapshots and serialized EventBus publication
 - [x] Evidence-linked findings and deterministic fixture-driven detection

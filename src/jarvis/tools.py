@@ -195,6 +195,62 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
         raise ValueError(f"{path} is not an allowed value.")
 
 
+
+
+def _snapshot_tool_arguments(arguments: Any) -> dict[str, Any]:
+    """Build a bounded, JSON-only dispatch snapshot before validation or approval."""
+    if arguments is None:
+        arguments = {}
+    if type(arguments) is not dict:
+        raise ValueError("Tool arguments must be a JSON object.")
+    budget = {"nodes": 0, "bytes": 0}
+    max_bytes = 256 * 1024
+
+    def clone(value: Any, depth: int = 0):
+        budget["nodes"] += 1
+        if budget["nodes"] > 10000 or depth > 8:
+            raise ValueError("Tool arguments exceed structural limits.")
+        if type(value) is dict:
+            if len(value) > 100:
+                raise ValueError("Tool argument object exceeds the key limit.")
+            result = {}
+            for key, item in value.items():
+                if type(key) is not str or not key or len(key) > 128:
+                    raise ValueError("Tool argument keys must be bounded strings.")
+                budget["bytes"] += len(key.encode("utf-8")) + 2
+                result[key] = clone(item, depth + 1)
+            return result
+        if type(value) is list:
+            if len(value) > 1000:
+                raise ValueError("Tool argument array exceeds the item limit.")
+            budget["bytes"] += 2
+            return [clone(item, depth + 1) for item in value]
+        if type(value) is str:
+            if len(value) > 100000:
+                raise ValueError("Tool argument string exceeds the global limit.")
+            budget["bytes"] += len(value.encode("utf-8")) + 2
+            return value
+        if type(value) is bool or value is None:
+            budget["bytes"] += 5
+            return value
+        if type(value) is int or type(value) is float:
+            _schema_number(value, "tool argument")
+            budget["bytes"] += len(repr(value))
+            return value
+        raise ValueError("Tool arguments must contain JSON-compatible values only.")
+
+    snapshot = clone(arguments)
+    if budget["bytes"] > max_bytes:
+        raise ValueError("Tool arguments exceed the 256 KB dispatch limit.")
+    try:
+        encoded = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("Tool arguments could not be safely serialized.") from exc
+    if len(encoded.encode("utf-8")) > max_bytes:
+        raise ValueError("Tool arguments exceed the 256 KB dispatch limit.")
+    return snapshot
+
+
 class ToolRegistry:
     """Schema-checked tool dispatcher with a central action-policy boundary."""
 
@@ -263,9 +319,9 @@ class ToolRegistry:
     def execute(self, name: str, arguments: dict[str, Any] | None = None) -> Any:
         if name not in self._tools:
             raise KeyError(f"Tool is not allow-listed: {name}")
-        args = arguments if arguments is not None else {}
         tool = self._tools[name]
         try:
+            args = _snapshot_tool_arguments(arguments)
             _validate_schema(args, tool.parameters)
             action = f"tool:{tool.name}"
             decision = self.action_policy.evaluate(action)
@@ -276,14 +332,14 @@ class ToolRegistry:
             if decision.requires_approval:
                 if tool.risk == "read":
                     raise PermissionError("Central policy requires approval for a read action; it is denied.")
-                self.policy.authorize(name, args, risk=tool.risk)
+                self.policy.authorize(name, copy.deepcopy(args), risk=tool.risk)
                 decision = self.action_policy.evaluate(action, approval_granted=True)
             else:
                 self.policy.authorize(name, args, risk=tool.risk)
             if not decision.allowed:
                 raise PermissionError(decision.reason)
             result = tool.handler(**args)
-            self.audit.record(name, tool.risk, "success", "Completed")
+            self.audit.record(name, tool.risk, "success", f"Completed; action={action}; policy={decision.reason}")
             return result
         except ApprovalRequired as exc:
             self.audit.record(name, tool.risk, "denied", str(exc))

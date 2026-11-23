@@ -18,6 +18,35 @@ class ToolTests(unittest.TestCase):
     def tearDown(self):
         self.temp.cleanup()
 
+
+    def test_dispatch_snapshots_args_and_isolates_approval_callback_mutation(self):
+        observed = []
+        original = {"value": "approved-value"}
+        def approve(name, args):
+            args["value"] = "callback-mutated-value"
+            return True
+        registry = ToolRegistry(SecurityPolicy(approve), self.audit)
+        schema = {"type": "object", "properties": {"value": {"type": "string"}},
+                  "required": ["value"], "additionalProperties": False}
+        registry.register(Tool("write_snapshot", "test", "write", lambda value: observed.append(value) or value, schema))
+        self.assertEqual(registry.execute("write_snapshot", original), "approved-value")
+        self.assertEqual(observed, ["approved-value"])
+        self.assertEqual(original, {"value": "approved-value"})
+        self.assertIn("policy=Explicit approval supplied", self.audit.recent()[0]["details"])
+
+    def test_dispatch_rejects_aggregate_payload_over_256kb(self):
+        observed = []
+        schema = {"type": "object", "properties": {
+            "first": {"type": "string"}, "second": {"type": "string"}, "third": {"type": "string"}},
+            "required": ["first", "second", "third"], "additionalProperties": False}
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        registry.register(Tool("payload_bound", "test", "read", lambda **kwargs: observed.append(True), schema))
+        payload = {key: "x" * 90000 for key in ("first", "second", "third")}
+        with self.assertRaises(ValueError):
+            registry.execute("payload_bound", payload)
+        self.assertEqual(observed, [])
+        self.assertEqual(self.audit.recent()[0]["outcome"], "error")
+
     def test_schema_validation_blocks_invalid_args_before_handler(self):
         called = []
         registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit)
