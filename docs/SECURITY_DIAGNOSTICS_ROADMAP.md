@@ -35,7 +35,16 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Cache feeds safely, validate data, enforce freshness and support offline operation.
 - [ ] Never claim a CVE applies without match evidence.
 
-## P3 — Threat analysis and adaptive defense
+## P3 — Threat knowledge core
+- [ ] Create normalized threat-technique catalog linked to MITRE ATT&CK, telemetry, platform coverage and mitigations.
+- [ ] Integrate vetted threat-indicator feeds with source, timestamps, expiry, confidence and safe caching.
+- [ ] Add curated, signed/versioned YARA/Sigma-compatible detection content and fixture regression tests.
+- [ ] Build technique-to-detection-to-containment-to-remediation-to-verification mapping.
+- [ ] Store safe malware metadata, hashes, analysis summaries and indicators; do not execute samples in the core.
+- [ ] Any optional sample analysis must be isolated, disposable, credential-free, network-controlled and separately reviewed.
+- [ ] Update threat content atomically, validate, roll back and provide coverage/false-positive metrics.
+
+## P4 — Threat analysis and adaptive defense
 - [ ] Build an evidence-backed detection-to-response pipeline (observe, correlate, classify, respond, verify) with confidence and provenance.
 - [ ] Implement root-cause case analysis across indicators, execution, persistence, vulnerabilities, affected assets and configuration gaps.
 - [ ] Add response profiles with dry-run, scoped local containment, approval, audit, rollback and independent verification.
@@ -51,21 +60,21 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Add evidence timeline and case notes with immutable evidence hashes.
 - [ ] Add artifact provenance and chain-of-custody export.
 
-## P4 — User exposure and account protection
+## P5 — User exposure and account protection
 - [ ] Opt-in account/email exposure monitoring through reputable provider APIs and authorized sources.
 - [ ] Privacy-preserving breached-password checks (hash-prefix/k-anonymity protocol where supported); never ingest or store plaintext credentials.
 - [ ] Provide breach-context alerts, affected data categories and actionable account recovery steps (password change, MFA/passkeys, session revocation, recovery review).
 - [ ] Add user-owned domain exposure and impersonation checks with scope/consent and conservative evidence handling.
 - [ ] Minimize notification disclosure and redact exposure data from logs.
 
-## P5 — Network and cloud security
+## P6 — Network and cloud security
 - [ ] Authorized local asset inventory with explicit CIDR allow-list and confirmation.
 - [ ] Passive telemetry ingestion (e.g., Zeek/Suricata formats) and anomaly summaries.
 - [ ] Protocol metadata inspection and bounded packet-file analysis.
 - [ ] Cloud posture adapters only after explicit connector scope and credential protections.
 - [ ] No exploit payloads, stealth, persistence or unauthorized scanning.
 
-## P6 — Safe remediation and operations
+## P7 — Safe remediation and operations
 - [ ] Remediation proposals with risk, evidence, prerequisites and rollback.
 - [ ] Dry-run and diff before changes.
 - [ ] Step-up confirmation for privileged operations.
@@ -74,7 +83,7 @@ This roadmap is prioritized around usable, measurable defensive capabilities acr
 - [ ] Optional scheduled monitoring, opt-in scope, rate limits and notifications.
 - [ ] Define autonomous modes (observe, guard, approval-based response, narrowly configured emergency response) with action budgets, expiry, lockout safeguards and kill switch.
 
-## P7 — UX, community and releases
+## P8 — UX, community and releases
 - [ ] Interactive terminal UX and guided first-run checkup.
 - [ ] Dashboard for health, findings, priorities, evidence and status.
 - [ ] Exportable reports that do not leak secrets.
