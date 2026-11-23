@@ -35,6 +35,19 @@ class ToolTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 registry.execute("numeric", {"value": value})
 
+    def test_array_bounds_and_integer_range_are_enforced(self):
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        schema = {"type": "object", "properties": {
+            "items": {"type": "array", "minItems": 1, "maxItems": 2, "items": {"type": "integer"}},
+            "count": {"type": "integer", "minimum": 1, "maximum": 3}
+        }, "required": ["items", "count"], "additionalProperties": False}
+        registry.register(Tool("bounded", "test", "read", lambda items, count: "ok", schema))
+        for args in ({"items": [], "count": 1}, {"items": [1, 2, 3], "count": 1},
+                     {"items": [1], "count": 0}, {"items": [1], "count": 4}):
+            with self.assertRaises(ValueError):
+                registry.execute("bounded", args)
+        self.assertEqual(registry.execute("bounded", {"items": [1, 2], "count": 2}), "ok")
+
     def test_read_tool_does_not_need_approval(self):
         registry = ToolRegistry(SecurityPolicy(lambda *_: False), self.audit)
         registry.register(Tool("read", "test", "read", lambda: "ok"))
