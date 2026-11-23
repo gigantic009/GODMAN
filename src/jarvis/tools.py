@@ -164,9 +164,13 @@ class ToolRegistry:
                 raise PermissionError(decision.reason)
             # The explicit approval callback remains a second gate for
             # write/system/external tools; an LLM cannot set this approval flag.
-            self.policy.authorize(name, args, risk=tool.risk)
             if decision.requires_approval:
+                if tool.risk == "read":
+                    raise PermissionError("Central policy requires approval for a read action; it is denied.")
+                self.policy.authorize(name, args, risk=tool.risk)
                 decision = self.action_policy.evaluate(action, approval_granted=True)
+            else:
+                self.policy.authorize(name, args, risk=tool.risk)
             if not decision.allowed:
                 raise PermissionError(decision.reason)
             result = tool.handler(**args)
