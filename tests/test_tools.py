@@ -59,6 +59,7 @@ class ToolTests(unittest.TestCase):
              "required": ["value"], "additionalProperties": True},
             {"type": "array", "minItems": 2, "maxItems": 1, "items": {"type": "string"}},
             {"type": "array", "items": {}},
+            {"type": "array", "items": {"type": "string"}},
             {"type": "object", "properties": {"value": {"type": "integer", "enum": [True]}},
              "required": ["value"], "additionalProperties": False},
             {"type": "object", "properties": {"value": {"type": "string", "maxLength": 100001}},
@@ -72,6 +73,18 @@ class ToolTests(unittest.TestCase):
                 registry = ToolRegistry(SecurityPolicy(), self.audit)
                 with self.assertRaises(ValueError):
                     registry.register(Tool("invalid", "test", "read", lambda **kwargs: None, schema))
+
+    def test_nested_array_schema_bounds_and_item_types(self):
+        schema = {"type": "object", "properties": {
+            "items": {"type": "array", "minItems": 1, "maxItems": 2,
+                      "items": {"type": "string", "minLength": 1, "maxLength": 4}}
+        }, "required": ["items"], "additionalProperties": False}
+        registry = ToolRegistry(SecurityPolicy(), self.audit)
+        registry.register(Tool("array_bound", "test", "read", lambda items: len(items), schema))
+        self.assertEqual(registry.execute("array_bound", {"items": ["a", "abcd"]}), 2)
+        for value in ({"items": []}, {"items": ["too-long"]}, {"items": [1]}):
+            with self.assertRaises(ValueError):
+                registry.execute("array_bound", value)
 
     def test_registered_schema_is_snapshotted_and_enum_is_type_strict(self):
         schema = {"type": "object", "properties": {"value": {"type": "integer", "enum": [1]}},
