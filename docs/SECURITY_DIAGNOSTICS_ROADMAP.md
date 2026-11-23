@@ -3,27 +3,39 @@
 This roadmap is prioritized around usable, measurable defensive capabilities across Windows, Linux, macOS, servers, and authorized cloud/network environments. See [Cross-platform architecture](CROSS_PLATFORM_ARCHITECTURE.md). Features are not considered complete until tests and documentation are updated.
 
 ## P0 — Stability and safety foundation
-- [x] Implement initial Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (unit tests added; CI verification pending).
-- [x] Integrate a central action-policy decision into the tool dispatcher; the existing explicit approval callback remains a second gate for non-read actions (CI verification pending).
-- [x] Snapshot and freeze normalized event payloads and detection-rule conditions to prevent ordinary post-publication mutation (targeted tests added; CI verification pending).
-- [ ] Verify audit-branch changes with full test suite and Windows CI.
+- [x] Implement Defensive Core foundation: normalized Event/EventBus with payload limits, evidence-linked Finding/Evidence, default-deny action-intent policy, deterministic detection rules and bus attachment, and bounded local SQLite store (77-test cross-version CI verified).
+- [x] Integrate a central action-policy decision into the tool dispatcher; the existing explicit approval callback remains a second gate for non-read actions (CI verified).
+- [x] Snapshot and freeze normalized event payloads and detection-rule conditions to prevent ordinary post-publication mutation (CI verified).
+- [x] Verify the core implementation with the full offline test suite and Python 3.10/3.11/3.12 CI matrix (native Windows CI remains separate).
 - [x] Add capability-gated endpoint adapter interface, registry, and normalized-event conversion (fixture tests added; native collectors not yet attached).
 - [ ] Add Windows test matrix for supported Python versions.
 - [ ] Establish Ruff linting, type-checking baseline and coverage reporting.
 - [ ] Add dependency vulnerability scanning and secret scanning in CI.
 - [ ] Add reproducible fixtures for Windows PowerShell collectors.
-- [ ] Improve schema validation to reject unsupported schema constructs and excessive payloads.
+- [x] Strictly validate the supported tool-schema subset at registration; reject unsupported constructs, bound payloads and snapshot definitions (77-test CI verified).
 - [ ] Add resource/time/output limits for every subprocess and external adapter.
 - [ ] Document data flow, storage, retention, API transmission and opt-out.
 - [ ] Add configuration validation and diagnostics for missing permissions/dependencies.
 
-### Phase 1 verification evidence — 23 November 2026
+### Phase 1 Defensive Core acceptance and verification — 23 November 2026
 
 - GitHub Actions run [45169573957](https://github.com/gigantic009/GODMAN/actions/runs/45169573957) passed for code commit `7336c6a5eb5cbd34aa721add1ad9c93a7624cd66`: source compilation and **77 offline unit tests** passed on Python 3.10, 3.11 and 3.12.
 - The passing matrix includes the strict tool-schema boundary, schema snapshot mutation, enum and numeric/integer overflow regressions, nested arrays, serialized EventBus/detection processing and concurrency retention test.
 - CI previously exposed a missing default `required` key in tool schemas; the schema normalization fix was included and verified in the successful runs.
 - Subsequent commits after the verified code SHA are documentation-only updates. CI for the newest documentation commit is pending.
 - Native endpoint collectors are not attached; Windows/Linux/macOS integration, native tests and operational verification remain outstanding. Phase 1 acceptance is not yet met.
+
+### Defensive Core foundation acceptance
+
+- [x] Central tool-policy decision and explicit approval boundary
+- [x] Normalized event schema, bounded payloads, immutable snapshots and serialized EventBus publication
+- [x] Evidence-linked findings and deterministic fixture-driven detection
+- [x] Capability-oriented adapter abstraction and normalized event conversion
+- [x] Bounded local SQLite event/finding knowledge store
+- [x] Strict registration-time tool-schema validation and regression coverage
+- [x] Cross-version CI compilation and 77 offline unit tests
+
+<text>Live/native collector integration, Windows-specific test coverage and wider platform/operational readiness are follow-on work; this acceptance applies to the Defensive Core foundation, not to GODMAN as a complete endpoint security product.</text>
 
 ## P1 — Diagnostics
 - [ ] CPU, memory, storage and system uptime snapshot with historical trends.
