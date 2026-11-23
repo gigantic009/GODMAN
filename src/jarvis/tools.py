@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import platform
+import copy
 from math import isfinite
 import shutil
 import subprocess
@@ -30,66 +31,161 @@ class Tool:
     parameters: dict[str, Any] = field(default_factory=lambda: {"type": "object", "properties": {}, "additionalProperties": False})
 
 
-def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments") -> None:
-    """Validate the supported JSON-schema subset at the runtime tool boundary."""
+def _schema_bound(value, label, maximum=100000):
+    if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= maximum:
+        raise ValueError(f"{label} must be a bounded non-negative integer.")
+    return value
+
+
+def _schema_number(value, label):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(f"{label} must be numeric.")
+    try:
+        numeric = float(value)
+    except (OverflowError, ValueError) as exc:
+        raise ValueError(f"{label} must be finite and bounded.") from exc
+    if not isfinite(numeric) or abs(numeric) > 1e100:
+        raise ValueError(f"{label} must be finite and bounded.")
+    return numeric
+
+
+def _validate_schema_definition(schema: Any, depth: int = 0) -> None:
+    """Validate and constrain the JSON Schema subset used for tool dispatch."""
+    if depth > 8 or not isinstance(schema, dict):
+        raise ValueError("Tool schemas must be bounded dictionaries.")
     kind = schema.get("type")
-    # Global limits apply even when a tool schema omits explicit bounds.
+    supported = {"object", "array", "string", "integer", "number", "boolean"}
+    if kind not in supported:
+        raise ValueError("Tool schemas require a supported explicit type.")
+    common = {"type", "description", "enum"}
+    allowed = {
+        "object": common | {"properties", "required", "additionalProperties"},
+        "array": common | {"items", "minItems", "maxItems"},
+        "string": common | {"minLength", "maxLength"},
+        "integer": common | {"minimum", "maximum"},
+        "number": common | {"minimum", "maximum"},
+        "boolean": common,
+    }[kind]
+    if set(schema) - allowed:
+        raise ValueError("Tool schema contains unsupported keywords.")
+    description = schema.get("description")
+    if description is not None and (not isinstance(description, str) or len(description) > 1000):
+        raise ValueError("Schema description must be bounded text.")
+    if "enum" in schema:
+        choices = schema["enum"]
+        if not isinstance(choices, list) or not 1 <= len(choices) <= 100:
+            raise ValueError("Enum must contain between 1 and 100 choices.")
+        for choice in choices:
+            if kind == "string" and not isinstance(choice, str):
+                raise ValueError("String enums must contain strings.")
+            if kind == "integer" and (isinstance(choice, bool) or not isinstance(choice, int)):
+                raise ValueError("Integer enums must contain integers.")
+            if kind == "number" and (isinstance(choice, bool) or not isinstance(choice, (int, float))):
+                raise ValueError("Number enums must contain numbers.")
+            if kind == "boolean" and not isinstance(choice, bool):
+                raise ValueError("Boolean enums must contain booleans.")
+            if kind in {"object", "array"}:
+                raise ValueError("Object and array enums are not supported.")
+        if len({(type(choice).__name__, repr(choice)) for choice in choices}) != len(choices):
+            raise ValueError("Enum choices must be unique.")
+    if kind == "object":
+        properties = schema.get("properties", {})
+        required = schema.get("required", [])
+        if not isinstance(properties, dict) or len(properties) > 100:
+            raise ValueError("Object properties must be a bounded dictionary.")
+        if not isinstance(required, list) or len(required) > 100 or any(not isinstance(x, str) for x in required):
+            raise ValueError("Object required fields must be a bounded string list.")
+        if len(set(required)) != len(required) or set(required) != set(properties):
+            raise ValueError("Strict tool schemas require every property exactly once.")
+        if schema.get("additionalProperties") is not False:
+            raise ValueError("Strict tool schemas must set additionalProperties=false.")
+        for key, child in properties.items():
+            if not isinstance(key, str) or not key or len(key) > 128:
+                raise ValueError("Schema property names must be bounded strings.")
+            _validate_schema_definition(child, depth + 1)
+    elif kind == "array":
+        if "items" not in schema:
+            raise ValueError("Array schema must define items.")
+        minimum = _schema_bound(schema.get("minItems", 0), "minItems", 1000)
+        maximum = _schema_bound(schema.get("maxItems", 1000), "maxItems", 1000)
+        if minimum > maximum:
+            raise ValueError("minItems cannot exceed maxItems.")
+        _validate_schema_definition(schema["items"], depth + 1)
+    elif kind == "string":
+        minimum = _schema_bound(schema.get("minLength", 0), "minLength")
+        maximum = _schema_bound(schema.get("maxLength", 100000), "maxLength")
+        if minimum > maximum:
+            raise ValueError("minLength cannot exceed maxLength.")
+    elif kind in {"integer", "number"}:
+        if "minimum" in schema:
+            _schema_number(schema["minimum"], "minimum")
+        if "maximum" in schema:
+            _schema_number(schema["maximum"], "maximum")
+        if "minimum" in schema and "maximum" in schema and schema["minimum"] > schema["maximum"]:
+            raise ValueError("minimum cannot exceed maximum.")
+
+
+def _enum_matches(value, choices, kind):
+    for choice in choices:
+        if kind == "string" and type(value) is str and value == choice:
+            return True
+        if kind == "integer" and type(value) is int and value == choice:
+            return True
+        if kind == "number" and type(value) in (int, float) and type(choice) in (int, float) and value == choice:
+            return True
+        if kind == "boolean" and type(value) is bool and value is choice:
+            return True
+    return False
+
+
+def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments") -> None:
+    """Validate values against the registered, bounded JSON Schema subset."""
+    kind = schema["type"]
     if isinstance(value, str) and len(value) > 100_000:
         raise ValueError(f"{path} exceeds the global string limit.")
-    if isinstance(value, (list, tuple)) and len(value) > 1_000:
+    if isinstance(value, list) and len(value) > 1_000:
         raise ValueError(f"{path} exceeds the global array limit.")
     if isinstance(value, dict) and len(value) > 100:
         raise ValueError(f"{path} exceeds the global object-key limit.")
     if kind == "object":
         if not isinstance(value, dict):
             raise ValueError(f"{path} must be an object.")
-        for key in schema.get("required", []):
+        properties = schema["properties"]
+        if set(value) - set(properties):
+            raise ValueError(f"{path} has unexpected keys.")
+        for key in schema["required"]:
             if key not in value:
                 raise ValueError(f"{path}.{key} is required.")
-        if schema.get("additionalProperties") is False:
-            extras = set(value) - set(schema.get("properties", {}))
-            if extras:
-                raise ValueError(f"{path} has unexpected keys.")
         for key, item in value.items():
-            child = schema.get("properties", {}).get(key)
-            if child is not None:
-                _validate_schema(item, child, f"{path}.{key}")
+            _validate_schema(item, properties[key], f"{path}.{key}")
     elif kind == "array":
         if not isinstance(value, list):
             raise ValueError(f"{path} must be an array.")
-        item_schema = schema.get("items")
-        if len(value) < schema.get("minItems", 0) or len(value) > schema.get("maxItems", float("inf")):
+        if len(value) < schema.get("minItems", 0) or len(value) > schema.get("maxItems", 1000):
             raise ValueError(f"{path} length is outside permitted bounds.")
-        if item_schema:
-            for i, item in enumerate(value):
-                _validate_schema(item, item_schema, f"{path}[{i}]")
+        for i, item in enumerate(value):
+            _validate_schema(item, schema["items"], f"{path}[{i}]")
     elif kind == "string":
         if not isinstance(value, str):
             raise ValueError(f"{path} must be a string.")
-        if len(value) < schema.get("minLength", 0) or len(value) > schema.get("maxLength", float("inf")):
+        if len(value) < schema.get("minLength", 0) or len(value) > schema.get("maxLength", 100000):
             raise ValueError(f"{path} length is outside permitted bounds.")
     elif kind == "integer":
         if isinstance(value, bool) or not isinstance(value, int):
             raise ValueError(f"{path} must be an integer.")
-        if "minimum" in schema and value < schema["minimum"]:
-            raise ValueError(f"{path} is below the minimum.")
-        if "maximum" in schema and value > schema["maximum"]:
-            raise ValueError(f"{path} is above the maximum.")
     elif kind == "number":
-        if isinstance(value, bool) or not isinstance(value, (int, float)) or not isfinite(float(value)):
-            raise ValueError(f"{path} must be a finite number.")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"{path} must be a number.")
+        _schema_number(value, path)
     elif kind == "boolean":
         if not isinstance(value, bool):
             raise ValueError(f"{path} must be a boolean.")
-    elif kind is not None:
-        raise ValueError(f"Unsupported schema type: {kind}.")
-    if "enum" in schema and value not in schema["enum"]:
+    if "minimum" in schema and value < schema["minimum"]:
+        raise ValueError(f"{path} is below the minimum.")
+    if "maximum" in schema and value > schema["maximum"]:
+        raise ValueError(f"{path} is above the maximum.")
+    if "enum" in schema and not _enum_matches(value, schema["enum"], kind):
         raise ValueError(f"{path} is not an allowed value.")
-    if isinstance(value, (int, float)) and not isinstance(value, bool):
-        if "minimum" in schema and value < schema["minimum"]:
-            raise ValueError(f"{path} is below the minimum.")
-        if "maximum" in schema and value > schema["maximum"]:
-            raise ValueError(f"{path} is above the maximum.")
 
 
 class ToolRegistry:
@@ -109,6 +205,8 @@ class ToolRegistry:
             raise TypeError("registered item must be a Tool")
         if not isinstance(tool.name, str) or not tool.name.strip() or len(tool.name) > 128:
             raise ValueError("tool name must be non-empty and bounded")
+        if not isinstance(tool.description, str) or len(tool.description) > 4096:
+            raise ValueError("tool description must be bounded text")
         if tool.risk not in {"read", "write", "system", "external"}:
             raise ValueError("tool risk must be read, write, system, or external")
         if not callable(tool.handler):
@@ -117,13 +215,15 @@ class ToolRegistry:
             raise TypeError("tool parameters must be a schema dictionary")
         if tool.name in self._tools:
             raise ValueError(f"Tool already registered: {tool.name}")
-        action = f"tool:{tool.name}"
-        # When no policy was supplied, registration is the explicit allow-list
-        # boundary: reads are allow-listed, while other actions are approval-scoped.
+        schema = copy.deepcopy(tool.parameters)
+        _validate_schema_definition(schema)
+        # Store an independent schema snapshot; caller mutation cannot alter dispatch.
+        registered = Tool(tool.name, tool.description, tool.risk, tool.handler, schema)
+        action = f"tool:{registered.name}"
         if self._default_action_policy:
             read_actions = set(self.action_policy.allowed_read_actions)
             approval_actions = set(self.action_policy.approval_actions)
-            if tool.risk == "read":
+            if registered.risk == "read":
                 read_actions.add(action)
             else:
                 approval_actions.add(action)
@@ -132,7 +232,7 @@ class ToolRegistry:
                 approval_actions=approval_actions,
                 emergency_actions=self.action_policy.emergency_actions,
             )
-        self._tools[tool.name] = tool
+        self._tools[registered.name] = registered
 
     def describe(self) -> list[dict[str, str]]:
         return [{"name": t.name, "description": t.description, "risk": t.risk}
@@ -145,7 +245,7 @@ class ToolRegistry:
                 "type": "function",
                 "name": tool.name,
                 "description": f"{tool.description} Risk level: {tool.risk}.",
-                "parameters": tool.parameters,
+                "parameters": copy.deepcopy(tool.parameters),
                 "strict": True,
             }
             for tool in self._tools.values()
