@@ -179,6 +179,7 @@ def _validate_schema(value: Any, schema: dict[str, Any], path: str = "arguments"
     elif kind == "integer":
         if isinstance(value, bool) or not isinstance(value, int):
             raise ValueError(f"{path} must be an integer.")
+        _schema_number(value, path)
     elif kind == "number":
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise ValueError(f"{path} must be a number.")
