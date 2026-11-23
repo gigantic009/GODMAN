@@ -335,7 +335,7 @@ class ToolRegistry:
                 self.policy.authorize(name, copy.deepcopy(args), risk=tool.risk)
                 decision = self.action_policy.evaluate(action, approval_granted=True)
             else:
-                self.policy.authorize(name, args, risk=tool.risk)
+                self.policy.authorize(name, copy.deepcopy(args), risk=tool.risk)
             if not decision.allowed:
                 raise PermissionError(decision.reason)
             result = tool.handler(**args)

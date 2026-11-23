@@ -47,6 +47,20 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(observed, [])
         self.assertEqual(self.audit.recent()[0]["outcome"], "error")
 
+
+    def test_authorization_callback_cannot_mutate_payload_when_policy_allows_action(self):
+        observed = []
+        def approve(name, args):
+            args["value"] = "mutated"
+            return True
+        central = ActionPolicy(allowed_read_actions={"tool:write_snapshot"}, approval_actions=set())
+        registry = ToolRegistry(SecurityPolicy(approve), self.audit, central)
+        schema = {"type": "object", "properties": {"value": {"type": "string"}},
+                  "required": ["value"], "additionalProperties": False}
+        registry.register(Tool("write_snapshot", "test", "write", lambda value: observed.append(value) or value, schema))
+        self.assertEqual(registry.execute("write_snapshot", {"value": "original"}), "original")
+        self.assertEqual(observed, ["original"])
+
     def test_schema_validation_blocks_invalid_args_before_handler(self):
         called = []
         registry = ToolRegistry(SecurityPolicy(lambda *_: True), self.audit)
