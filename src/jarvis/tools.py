@@ -82,6 +82,10 @@ def _validate_schema_definition(schema: Any, depth: int = 0) -> None:
                 raise ValueError("Integer enums must contain integers.")
             if kind == "number" and (isinstance(choice, bool) or not isinstance(choice, (int, float))):
                 raise ValueError("Number enums must contain numbers.")
+            if kind in {"integer", "number"}:
+                _schema_number(choice, "enum choice")
+            if kind == "string" and len(choice) > 100000:
+                raise ValueError("String enum choices must be bounded.")
             if kind == "boolean" and not isinstance(choice, bool):
                 raise ValueError("Boolean enums must contain booleans.")
             if kind in {"object", "array"}:
