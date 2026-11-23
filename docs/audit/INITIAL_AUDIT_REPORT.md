@@ -126,7 +126,6 @@ Changes implemented in `qa/security-audit-2026-11`, pending test execution and r
 - G-001: Runtime schema validation at tool dispatch, including nested types, required keys, additional-key rejection, enum/length and numeric bounds.
 - G-002: Disk diagnostics now use the configured workspace path only; model-supplied arbitrary path arguments removed.
 - G-004: Workspace file creation uses exclusive create mode and re-resolves containment after parent creation. This narrows the race window; it is not a complete platform-independent defense against hostile symlink races.
-- G-005: Shared price-series validation rejects non-finite and boolean inputs.
 - G-006: Audit details are centrally redacted for common credential patterns and email addresses; this remains best-effort.
 - G-003: Added a data-handling notice explaining workspace reads and model-service transmission.
 
