@@ -17,6 +17,7 @@ from .security_scanning import scan_with_microsoft_defender
 from .windows_firewall import inspect_windows_firewall
 from .windows_events import collect_windows_security_events
 from .url_triage import analyze_url_structure
+from .persistence_inspection import inspect_windows_persistence
 
 
 @dataclass(frozen=True)
@@ -293,6 +294,13 @@ def build_default_registry(data_dir: str | Path, workspace: str | Path,
         "read",
         analyze_url_structure,
         _object({"url": {"type": "string", "minLength": 1, "maxLength": 4096}}, ["url"]),
+    ))
+    registry.register(Tool(
+        "inspect_windows_persistence",
+        "Read-only inventory of selected Windows Run keys, scheduled task actions, and services with explainable persistence heuristics. Findings are not proof of malware.",
+        "read",
+        inspect_windows_persistence,
+        _object({}, []),
     ))
     registry.register(Tool(
         "scan_workspace_with_defender",
